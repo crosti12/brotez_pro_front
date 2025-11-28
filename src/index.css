@@ -6,14 +6,15 @@
   box-sizing: border-box;
   font-family: "Roboto", sans-serif;
   --primary-color: rgba(252, 252, 252, 0.884);
-  --navbar-height: 20px;
-  --footer-height: 20px;
   --secondary-color: #000000;
   --accent-color: #1565c088;
 }
 
 html {
-  background-color: var(--primary-color);
+  background-image: url("../public/wallpaper.png");
+  background-repeat: repeat;
+  background-size: auto;
+  background-position: top left;
 }
 
 .select-dropdown {

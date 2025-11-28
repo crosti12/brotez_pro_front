@@ -9,4 +9,19 @@
 .notification-toast .p-toast-message-text {
   position: relative;
   left: 20px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.notification-toast .p-toast-message-content {
+  height: 50px;
+}
+.notification-toast .p-toast-summary {
+  display: none;
+}
+
+.notification-toast .p-toast-message-content > svg {
+  position: relative;
+  top: 8px;
+  left: 8px;
 }

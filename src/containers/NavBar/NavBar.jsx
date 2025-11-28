@@ -45,13 +45,12 @@ const navButtons = [
 
 const NavBar = () => {
   const { view, setView, user } = useGlobalState();
-
   const allowedViews = {
     ...(user.permissions || {}),
   };
 
   return (
-    <div className="nav-bar">
+    <div className="navbar">
       {navButtons.map((btn, index) => (
         <div style={btn.styles}>
           {allowedViews[btn.id] && (

@@ -1,16 +1,22 @@
-.nav-bar button:focus {
+.navbar button:focus {
   outline: none;
   border: none;
 }
 .add-order path {
   fill: var(--accent-color);
 }
-.nav-bar {
+.navbar {
   display: flex;
   align-items: flex-end;
   justify-content: center;
   gap: 32px;
   width: 100%;
+  bottom: 2px;
+  position: sticky;
+  z-index: 4;
+  background-color: white;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
 }
 .view-active path {
   fill: var(--accent-color);

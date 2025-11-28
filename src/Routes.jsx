@@ -22,9 +22,7 @@ const Routes = () => {
     <div className="app-layout">
       <Header />
       <main className="main-content">{routes[view]}</main>
-      <footer>
-        <NavBar />
-      </footer>
+      <NavBar />
     </div>
   );
 };

@@ -4,13 +4,19 @@
   justify-content: start;
   gap: 8px;
   width: 100%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 8px;
   border-radius: 8px;
+  top: 1px;
+  z-index: 10;
+  background-color: white;
+  position: sticky;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
 .setting-icon {
   margin-left: auto;
 }
+
 .setting-icon path {
   fill: var(--accent-color);
 }

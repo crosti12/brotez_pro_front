@@ -39,7 +39,7 @@ const Login = () => {
           onChange={onInputChange}
           value={values.password}
         />
-        <Button variant="outline" onClick={onSubmit}>
+        <Button variant="contained" onClick={onSubmit}>
           {t("login")}
         </Button>
       </div>

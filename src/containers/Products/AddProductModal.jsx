@@ -5,24 +5,29 @@ import MenuItem from "@mui/material/MenuItem";
 import useGlobalState from "../../actions/useGlobalState";
 import Button from "@mui/material/Button";
 import useAPI from "../../actions/useAPI";
+import DeleteIcon from "@mui/icons-material/Delete";
+import DoneIcon from "@mui/icons-material/Done";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 const AddProductModal = ({ visible = false, setVisible = () => {}, mode = "", data, setData, initialState }) => {
-  const { user, t } = useGlobalState();
-  const { onCreateProduct, updateProduct } = useAPI();
-
+  const { user, t, showMessage } = useGlobalState();
+  const { onCreateProduct, updateProduct, deleteProduct } = useAPI();
   const isAllowed = user?.role === "admin" || user?.role === "developer";
-
   const resetState = () => setData(() => initialState);
 
   const onSave = async () => {
     const isInvalid = !data.price || !data.name;
     const updatedProduct = { ...data, author: user.id || user._id };
     if (!isInvalid) {
-      mode === "edit"
-        ? await updateProduct(updatedProduct)
-        : await onCreateProduct({ ...data, author: user.id || user._id });
-      setVisible(false);
-      resetState();
+      const resp =
+        mode === "edit"
+          ? await updateProduct(updatedProduct)
+          : await onCreateProduct({ ...data, author: user.id || user._id });
+      if (resp) {
+        showMessage(t("productSaved"), "success");
+        setVisible(false);
+        resetState();
+      }
     }
   };
 
@@ -31,10 +36,21 @@ const AddProductModal = ({ visible = false, setVisible = () => {}, mode = "", da
     resetState();
   };
 
+  const onDelete = async () => {
+    const resp = await deleteProduct(data);
+    if (resp) {
+      resetState();
+      showMessage(t("productDeleted"), "success");
+      setVisible(false);
+    }
+  };
   return (
     <Dialog open={visible} onClose={onClose}>
       <div className="add-product-modal">
-        <p>{t("addProduct")}</p>
+        <div className="add-product-modal-header">
+          <p>{t("addProduct")}</p>
+          <CancelIcon onClick={onClose} sx={{ height: "30px", width: "30px" }} />
+        </div>
 
         <TextField label={t("name")} value={data.name} onChange={(e) => setData({ ...data, name: e.target.value })} />
 
@@ -66,8 +82,14 @@ const AddProductModal = ({ visible = false, setVisible = () => {}, mode = "", da
             onChange={(e) => setData({ ...data, cost: e.target.value })}
           />
         )}
-        <Button onClick={onClose}>{t("close")}</Button>
-        <Button onClick={onSave}>{t("accept")}</Button>
+        <div className="add-product-modal-actions">
+          <Button onClick={onDelete} color="error" variant="contained" startIcon={<DeleteIcon />}>
+            {t("delete")}
+          </Button>
+          <Button endIcon={<DoneIcon />} color="success" variant="contained" onClick={onSave}>
+            {t("accept")}
+          </Button>
+        </div>
       </div>
     </Dialog>
   );

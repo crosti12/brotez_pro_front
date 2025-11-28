@@ -7,9 +7,6 @@ import { useState } from "react";
 import AddProductModal from "./AddProductModal";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import useAPI from "../../actions/useAPI";
 
 const initialState = {
   name: "",
@@ -23,38 +20,23 @@ const Products = () => {
   const { t, products } = useGlobalState();
   const [openAddProductModal, setOpenAddProductModal] = useState(false);
   const [modalMode, setModalMode] = useState("");
-  const { deleteProduct } = useAPI();
 
   const [globalFilter, setGlobalFilter] = useState("");
 
   const addButton = (
-    <Button onClick={() => setOpenAddProductModal(true)} variant="contained">
-      {t("AddnewProduct")}
+    <Button className="add-product" onClick={() => setOpenAddProductModal(true)} variant="contained">
+      {t("new")}
     </Button>
   );
 
-  const actionTemplate = (rowData) => (
-    <div style={{ display: "flex", gap: "0.5rem" }}>
-      <IconButton
-        color="primary"
-        size="small"
-        onClick={() => {
-          setData(rowData);
-          setModalMode("edit");
-          setOpenAddProductModal(true);
-        }}
-      >
-        <EditIcon />
-      </IconButton>
-      <IconButton color="error" size="small" onClick={() => deleteProduct(rowData)}>
-        <DeleteIcon />
-      </IconButton>
-    </div>
-  );
+  const onRowClick = (rowData) => {
+    setData(rowData.data);
+    setModalMode("edit");
+    setOpenAddProductModal(true);
+  };
 
-  // 🔧 custom header with search bar + add button
   const header = (
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+    <div className="product-table-header">
       {addButton}
       <TextField
         variant="outlined"
@@ -67,18 +49,18 @@ const Products = () => {
   );
 
   return (
-    <div>
+    <div className="product-datatable">
       {products?.length > 0 ? (
-        <DataTable value={products} header={header} globalFilter={globalFilter} filterDisplay="row" showGridlines>
+        <DataTable value={products} header={header} globalFilter={globalFilter} onRowClick={onRowClick} showGridlines>
           <Column field="name" header={t("name")} />
           <Column field="productType" header={t("productType")} />
           <Column field="price" header={t("price")} />
           <Column field="cost" header={t("cost")} />
-          <Column header={t("action")} body={actionTemplate} />
         </DataTable>
       ) : (
         addButton
       )}
+
       <AddProductModal
         data={data}
         setData={setData}

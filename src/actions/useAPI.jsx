@@ -53,6 +53,7 @@ const useAPI = () => {
       delete body.createdAt;
       const resp = await putReq({ params: `products/id/${id}`, body });
       if (resp) dispatch(setProducts(resp));
+      return resp;
     } catch (error) {
       console.error(error);
     }
@@ -63,6 +64,7 @@ const useAPI = () => {
     try {
       const resp = await deleteReq({ params: `products/id/${id}` });
       if (resp) dispatch(setProducts(resp));
+      return resp;
     } catch (error) {
       console.error(error);
     }
