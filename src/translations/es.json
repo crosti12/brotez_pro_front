@@ -1,0 +1,9 @@
+{
+  "username": "Usuario",
+  "password": "Contraseña",
+  "login": "Entrar",
+  "isPaid": "Pagado?",
+  "clientName": "Nombre del cliente",
+  "clientPhone": "Teléfono del cliente",
+  "reference": "Referencia"
+}

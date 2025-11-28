@@ -1,0 +1,16 @@
+{
+  "username": "Username",
+  "password": "Password",
+  "login": "Login",
+  "isPaid": "Is paid?",
+  "clientName": "Client name",
+  "clientPhone": "Client phone",
+  "reference": "Reference",
+  "successCreated": "Created Successfully!!",
+  "errorMsgs": {
+    "productsMissing": "Please add at least one product",
+    "referenceFieldMissing": "The reference field is missing",
+    "clientPhoneMissing": "The client phone field is missing",
+    "clientNameMissing": "The client name field is missing"
+  }
+}

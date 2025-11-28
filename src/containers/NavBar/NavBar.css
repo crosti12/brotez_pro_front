@@ -1,0 +1,17 @@
+.nav-bar button:focus {
+  outline: none;
+  border: none;
+}
+.add-order path {
+  fill: var(--accent-color);
+}
+.nav-bar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 32px;
+  width: 100%;
+}
+.view-active path {
+  fill: var(--accent-color);
+}

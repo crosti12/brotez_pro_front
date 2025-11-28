@@ -1,0 +1,12 @@
+.notification-toast {
+  width: 300px;
+}
+.notification-toast svg {
+  position: relative;
+  left: 5px;
+  width: 20px;
+}
+.notification-toast .p-toast-message-text {
+  position: relative;
+  left: 20px;
+}

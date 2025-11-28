@@ -1,0 +1,31 @@
+.new-order__product-add {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: space-between;
+  width: 100%;
+}
+.add-order-modal {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  width: 80vw;
+  height: 400px;
+  padding: 8px;
+}
+
+.new-order__product-list {
+  height: 40vh;
+  width: 90vw;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  background-color: #6d65655b;
+}
+.css-1808mag-MuiPaper-root-MuiAccordion-root.Mui-expanded {
+  margin: 0 !important;
+}

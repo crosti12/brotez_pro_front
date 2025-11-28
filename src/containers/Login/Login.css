@@ -1,0 +1,14 @@
+.login {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  max-width: 400px;
+  margin-top: 12px;
+}
+.login img {
+  height: 300px;
+}
+.login-input {
+  background-color: rgb(255, 255, 255) !important;
+  border-radius: 12px;
+}
