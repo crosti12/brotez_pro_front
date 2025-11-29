@@ -23,6 +23,7 @@ const Order = () => {
   const { createOrder } = useAPI();
   const { user, setNewOrder: setOrder, newOrder: order, showMessage, products } = useGlobalState();
   const totalPrice = useRef(null);
+  const [loading, setIsloading] = useState(false);
 
   const localProducts = order.products || [];
   const setLocalProducts = (val) => setOrder({ ...order, products: val });
@@ -75,6 +76,7 @@ const Order = () => {
     setOrder({ paymentType: PAYMENT_TYPES[0], clientName: "", clientPhone: "", isPaid: true });
   };
   const onSave = async () => {
+    setIsloading(true);
     const total = totalPrice.current.id;
     const body = {
       ...order,
@@ -100,13 +102,17 @@ const Order = () => {
     else if (!body.isPaid && !body.clientPhone) message = t("errorMsgs.clientPhoneMissing");
     else if (!body.isPaid && !body.clientName) message = t("errorMsgs.clientNameMissing");
 
-    if (message) return showMessage(message, "warn");
+    if (message) {
+      setIsloading(false);
+      return showMessage(message, "warn");
+    }
 
     const resp = await createOrder(body);
     if (resp) {
       showMessage(t("successCreated"), "success");
       onClear();
     }
+    setIsloading(false);
   };
 
   const getproducList = () => {
@@ -252,7 +258,7 @@ const Order = () => {
           <Button variant="outlined" onClick={onClear} color="error">
             {t("reset")}
           </Button>
-          <Button variant="contained" onClick={onSave}>
+          <Button variant="contained" loading={loading} disabled={loading} onClick={onSave}>
             {t("save")}
           </Button>
         </div>
