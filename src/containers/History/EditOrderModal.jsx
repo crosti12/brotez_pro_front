@@ -95,6 +95,14 @@ const EditOrderModal = ({
               <h1>{t("orderId")}:</h1>
               <p>{data?.orderId}</p>
             </span>
+            <span>
+              <h1>{t("clientName")}:</h1>
+              <p>{data?.clientName}</p>
+            </span>
+            <span>
+              <h1>{t("clientPhone")}:</h1>
+              <p>{data?.clientPhone}</p>
+            </span>
             {data.isPaid && (
               <>
                 {data?.paymentId && (
