@@ -63,14 +63,25 @@ const AddOrderedProductModal = ({
             renderInput={(params) => <TextField {...params} label="name" />}
           />
           <div className="flex">
-            <TextField
-              inputMode="numeric"
-              type="number"
-              value={parseFloat(data.quantity.replace(",", ".")).toFixed(3)}
-              onFocus={(e) => moveCursorToEnd(e.target)}
-              onClick={(e) => moveCursorToEnd(e.target)}
-              onChange={onQuantityChange}
-            />
+            {data.unit === "kg" ? (
+              <TextField
+                inputMode="numeric"
+                type="number"
+                value={parseFloat(data.quantity.replace(",", ".")).toFixed(3)}
+                onFocus={(e) => moveCursorToEnd(e.target)}
+                onClick={(e) => moveCursorToEnd(e.target)}
+                onChange={onQuantityChange}
+              />
+            ) : (
+              <TextField
+                inputMode="numeric"
+                type="number"
+                value={data.quantity}
+                onFocus={(e) => moveCursorToEnd(e.target)}
+                onClick={(e) => moveCursorToEnd(e.target)}
+                onChange={onQuantityChange}
+              />
+            )}
             <p className="new-order-product-unit">{data.unit}</p>
           </div>
         </div>
