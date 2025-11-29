@@ -73,7 +73,7 @@ const AddOrderedProductModal = ({
             <p className="new-order-product-unit">{data.unit}</p>
           </div>
         </div>
-        <div className="flex gap-8 align-end">
+        <div className="flex gap-8 align-end margin-top-auto">
           <Button
             onClick={() => {
               onAdditem(data);

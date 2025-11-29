@@ -20,9 +20,7 @@ html {
   overflow-y: unset !important;
   overflow: unset !important;
 }
-.css-1424xw8-MuiModal-root-MuiDialog-root {
-  top: -30% !important;
-}
+
 .MuiButtonBase-root,
 .MuiPaper-elevation {
   border-radius: 8px !important;
@@ -60,4 +58,7 @@ html {
 }
 .body-font {
   font-size: 12px;
+}
+.margin-top-auto {
+  margin-top: auto;
 }
