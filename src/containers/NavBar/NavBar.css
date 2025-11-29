@@ -5,6 +5,7 @@
 .add-order path {
   fill: var(--accent-color);
 }
+
 .navbar {
   display: flex;
   align-items: flex-end;
@@ -15,9 +16,15 @@
   position: sticky;
   z-index: 4;
   background-color: white;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgb(0 0 0 / 75%);
   border-radius: 8px;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  height: 32px;
 }
 .view-active path {
   fill: var(--accent-color);
+}
+.nav-btn svg {
+  fill: rgba(0, 0, 0, 0.692);
 }

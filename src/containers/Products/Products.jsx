@@ -17,7 +17,7 @@ const initialState = {
 
 const Products = () => {
   const [data, setData] = useState(initialState);
-  const { t, products } = useGlobalState();
+  const { t, products, user } = useGlobalState();
   const [openAddProductModal, setOpenAddProductModal] = useState(false);
   const [modalMode, setModalMode] = useState("");
 
@@ -55,7 +55,7 @@ const Products = () => {
           <Column field="name" header={t("name")} />
           <Column field="productType" header={t("productType")} />
           <Column field="price" header={t("price")} />
-          <Column field="cost" header={t("cost")} />
+          {user?.permissions?.manageCost && <Column field="cost" header={t("cost")} />}
         </DataTable>
       ) : (
         addButton

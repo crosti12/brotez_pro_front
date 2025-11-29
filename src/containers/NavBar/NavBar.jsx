@@ -4,11 +4,10 @@ import AddCircle from "@mui/icons-material/AddCircle";
 import HistoryIcon from "@mui/icons-material/History";
 import QueryStatsIcon from "@mui/icons-material/QueryStats";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import useGlobalState from "../../actions/useGlobalState";
-
-const ADD_SIZE = "60px";
-const BUTTON_SIZE = "26px";
+import AssignmentIndIcon from "@mui/icons-material/PersonAddAltOutlined";
+const ADD_SIZE = "50px";
+const BUTTON_SIZE = "25px";
 
 const navButtons = [
   {
@@ -26,7 +25,7 @@ const navButtons = [
   {
     id: "addOrder",
     icon: <AddCircle sx={{ width: ADD_SIZE, height: ADD_SIZE }} />,
-    className: "nav-btn add-order",
+    className: "add-order",
     styles: { width: ADD_SIZE, height: ADD_SIZE },
   },
   {

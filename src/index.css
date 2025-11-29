@@ -16,7 +16,14 @@ html {
   background-size: auto;
   background-position: top left;
 }
-
+.css-10d30g3-MuiPaper-root-MuiDialog-paper {
+  overflow-y: unset !important;
+  overflow: unset !important;
+}
+.MuiButtonBase-root,
+.MuiPaper-elevation {
+  border-radius: 8px !important;
+}
 .select-dropdown {
   width: 100%;
 }

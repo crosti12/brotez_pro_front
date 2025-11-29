@@ -12,22 +12,21 @@ import CancelIcon from "@mui/icons-material/Cancel";
 const AddProductModal = ({ visible = false, setVisible = () => {}, mode = "", data, setData, initialState }) => {
   const { user, t, showMessage } = useGlobalState();
   const { onCreateProduct, updateProduct, deleteProduct } = useAPI();
-  const isAllowed = user?.role === "admin" || user?.role === "developer";
   const resetState = () => setData(() => initialState);
 
   const onSave = async () => {
-    const isInvalid = !data.price || !data.name;
+    if (!data.price) return showMessage(t("errorMsgs.priceMissing"), "warn");
+    if (!data.name) return showMessage(t("errorMsgs.nameMissing"), "warn");
+
     const updatedProduct = { ...data, author: user.id || user._id };
-    if (!isInvalid) {
-      const resp =
-        mode === "edit"
-          ? await updateProduct(updatedProduct)
-          : await onCreateProduct({ ...data, author: user.id || user._id });
-      if (resp) {
-        showMessage(t("productSaved"), "success");
-        setVisible(false);
-        resetState();
-      }
+    const resp =
+      mode === "edit"
+        ? await updateProduct(updatedProduct)
+        : await onCreateProduct({ ...data, author: user.id || user._id });
+    if (resp) {
+      showMessage(t("productSaved"), "success");
+      setVisible(false);
+      resetState();
     }
   };
 
@@ -62,7 +61,7 @@ const AddProductModal = ({ visible = false, setVisible = () => {}, mode = "", da
         />
 
         <Select value={data.unit} onChange={(e) => setData({ ...data, unit: e.target.value })} displayEmpty>
-          <MenuItem value={"kg"}>{t("weight")}</MenuItem>
+          <MenuItem value={"kg"}>{t("kg")}</MenuItem>
           <MenuItem value={"unit"}>{t("unit")}</MenuItem>
         </Select>
 
@@ -74,7 +73,7 @@ const AddProductModal = ({ visible = false, setVisible = () => {}, mode = "", da
           <MenuItem value={"vegetable"}>{t("vegetable")}</MenuItem>
         </Select>
 
-        {isAllowed && (
+        {user?.permissions?.manageCost && (
           <TextField
             label={t("cost")}
             type="number"

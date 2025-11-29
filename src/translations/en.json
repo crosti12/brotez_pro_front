@@ -2,7 +2,7 @@
   "username": "Username",
   "password": "Password",
   "login": "Login",
-  "isPaid": "Is paid?",
+  "isPaid": "Paid?",
   "clientName": "Client name",
   "clientPhone": "Client phone",
   "reference": "Reference",
@@ -16,10 +16,18 @@
   "accept": "Accept",
   "productSaved": "Product saved successfully!!",
   "productDeleted": "Product deleted successfully!!",
+  "products": "Products",
+  "add": "Add",
+  "pagoMovil": "Pago movil",
+  "isDelivered": "Delivered?",
+  "kg": "Kg",
+  "unit": "Unit",
   "errorMsgs": {
     "productsMissing": "Please add at least one product",
     "referenceFieldMissing": "The reference field is missing",
     "clientPhoneMissing": "The client phone field is missing",
-    "clientNameMissing": "The client name field is missing"
+    "clientNameMissing": "The client name field is missing",
+    "priceMissing": "The price field is missing",
+    "nameMissing": "The name field is missing"
   }
 }

@@ -24,5 +24,9 @@ export function sumCommaStrings(val1, val2) {
 
   const sum = num1 + num2;
 
-  return sum.toString().replace(".", ",");
+  return sum.toFixed(3).replace(".", ",");
+}
+
+export function addDots(num) {
+  return new Intl.NumberFormat("de-DE").format(num);
 }

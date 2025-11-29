@@ -8,7 +8,7 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AddCircle from "@mui/icons-material/AddCircle";
 import AddProductModal from "./AddOrderedProductModal";
-import { formatDigits, sumCommaStrings } from "../../utils/numberFormat";
+import { addDots, formatDigits, sumCommaStrings } from "../../utils/numberFormat";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import "./Order.css";
@@ -21,7 +21,7 @@ const Order = () => {
   const { t } = useTranslation();
   const [openAddModal, setOpenAddModal] = useState(false);
   const { createOrder } = useAPI();
-  const { user, setNewOrder: setOrder, newOrder: order, showMessage } = useGlobalState();
+  const { user, setNewOrder: setOrder, newOrder: order, showMessage, products } = useGlobalState();
   const totalPrice = useRef(null);
 
   const localProducts = order.products || [];
@@ -78,7 +78,9 @@ const Order = () => {
     const total = totalPrice.current.id;
     const body = {
       ...order,
-      products: localProducts.map((pro) => ({ productId: pro.product._id, quantity: pro.quantity })),
+      products: localProducts
+        .map((pro) => pro.quantity && { productId: pro.product._id, quantity: pro.quantity })
+        .filter(Boolean),
       author: user.id,
       total,
     };
@@ -88,9 +90,11 @@ const Order = () => {
     } else {
       delete body.paymentId;
     }
+
     let message = "";
     if (!body?.products?.length > 0) message = t("errorMsgs.productsMissing");
-    else if (body.isPaid && !body.paymentId) message = t("errorMsgs.referenceFieldMissing");
+    else if (body.isPaid && body.paymentType === "pagoMovil" && !body.paymentId)
+      message = t("errorMsgs.referenceFieldMissing");
     else if (!body.isPaid && !body.clientPhone) message = t("errorMsgs.clientPhoneMissing");
     else if (!body.isPaid && !body.clientName) message = t("errorMsgs.clientNameMissing");
 
@@ -106,81 +110,108 @@ const Order = () => {
   const getproducList = () => {
     const result = localProducts.reduce(
       (acc, orderProduct, index) => {
-        const itemPrice = parseInt(orderProduct.product.price * parseFloat(orderProduct.quantity.replace(",", ".")));
+        const stateProduct = products.find((pro) => pro._id === orderProduct.product._id);
+        if (!stateProduct) return;
+        const sumResult = parseInt(stateProduct.price * parseFloat(orderProduct.quantity.replace(",", ".")));
+        const orderProductPrice = !Number.isNaN(sumResult) ? sumResult : 0;
 
         const itemUi = (
           <Accordion key={orderProduct.name}>
             <AccordionSummary expandIcon={<HighlightOffIcon onClick={(e) => onDeleteProduct(e, index)} />}>
-              <span>{orderProduct.name}</span>
-              <span>{orderProduct.quantity}</span>
-              <span>{itemPrice}</span>
+              <div className="ordered-product-details">
+                <span>{orderProduct.name}: </span>
+                <span className="flex">
+                  <p>{orderProduct.quantity || 0}/</p>
+                  <p>{t(orderProduct.unit)}</p>
+                </span>
+                <span>{addDots(orderProductPrice)}/Bs</span>
+              </div>
             </AccordionSummary>
 
             <AccordionDetails>
-              {orderProduct.unit === "kg" ? (
-                <TextField
-                  value={orderProduct.quantity}
-                  inputMode="numeric"
-                  onChange={(e) => onProductChange(onFormatNumber(e.target.value), "quantity", index)}
-                  label={t("quantity")}
-                  onFocus={(e) => moveCursorToEnd(e.target)}
-                  onClick={(e) => moveCursorToEnd(e.target)}
-                />
-              ) : (
-                <TextField
-                  value={orderProduct.quantity}
-                  type="number"
-                  onChange={(e) => onProductChange(e.target.value, "quantity", index)}
-                  label={t("quantity")}
-                />
-              )}
-
-              <TextField value={orderProduct?.product?.price} label={t("price")} />
+              <div className="product-edit-info">
+                {orderProduct.unit === "kg" ? (
+                  <TextField
+                    value={orderProduct.quantity}
+                    inputMode="numeric"
+                    onChange={(e) => onProductChange(onFormatNumber(e.target.value), "quantity", index)}
+                    label={t("quantity")}
+                    onFocus={(e) => moveCursorToEnd(e.target)}
+                    onClick={(e) => moveCursorToEnd(e.target)}
+                  />
+                ) : (
+                  <TextField
+                    value={orderProduct.quantity}
+                    type="number"
+                    onChange={(e) => onProductChange(e.target.value, "quantity", index)}
+                    label={t("quantity")}
+                  />
+                )}
+                <p>
+                  {t("price")}: {stateProduct?.price}/Bs x {t(stateProduct.unit)}
+                </p>
+              </div>
             </AccordionDetails>
           </Accordion>
         );
         acc.productsUi.push(itemUi);
-        acc.total += itemPrice;
+        !Number.isNaN(orderProductPrice) && (acc.total += orderProductPrice);
         return acc;
       },
       { productsUi: [], total: 0 }
     );
+
     return (
       <>
         {result.productsUi}
-        <span ref={totalPrice} id={result.total}>
-          Total: {result.total}
+        <span className="total-order-price" ref={totalPrice} id={result.total}>
+          Total: <span className="total-order-price-amount">{addDots(result.total)}</span> Bs
         </span>
       </>
     );
   };
 
   return (
-    <div className="new-order">
+    <div className="new-order" key={products}>
       <div className="new-order__product-add">
-        <span>{t("product")}</span>
-        <AddCircle onClick={() => setOpenAddModal(true)} />
+        <span>{t("products")}</span>
+        <Button endIcon={<AddCircle />} color="primary" variant="contained" onClick={() => setOpenAddModal(true)}>
+          {t("add")}
+        </Button>
       </div>
 
       <div className="new-order__product-list">{getproducList()}</div>
       <div className="new-order__client-data">
-        <div className="flex">
-          <h1>{t("isPaid")}</h1>
-          <Switch
-            checked={order.isPaid}
-            key={order.isPaid ? "news" : "asd"}
-            onChange={() => onInputChange("isPaid", !order.isPaid)}
-          />
+        <div className="order-switches">
+          <div className="order-switch" onClick={() => onInputChange("isPaid", !order.isPaid)}>
+            <span className="ispaid-label">{t("isPaid")}</span>
+            <Switch
+              checked={order.isPaid}
+              key={order.isPaid ? "news" : "asd"}
+              onChange={() => onInputChange("isPaid", !order.isPaid)}
+            />
+          </div>
+          <div className="order-switch" onClick={() => onInputChange("isDelivered", !order.isDelivered)}>
+            <span className="ispaid-label">{t("isDelivered")}</span>
+            <Switch
+              checked={order.isDelivered || false}
+              key={order.isDelivered ? "delivers" : "deliverss"}
+              onChange={() => onInputChange("isDelivered", !order.isDelivered)}
+            />
+          </div>
         </div>
-        <div className="flex-col">
+        <div className="order-payment-data">
           {!order.isPaid ? (
             <>
               <TextField
+                size="small"
                 value={order.clientName}
                 onChange={(e) => onInputChange("clientName", e.target.value)}
                 label={t("clientName")}
+                className="client-name"
               />
               <TextField
+                size="small"
                 value={order.clientPhone}
                 type="number"
                 onChange={(e) => onInputChange("clientPhone", e.target.value)}
@@ -192,6 +223,7 @@ const Order = () => {
           ) : (
             <>
               <Select
+                size="small"
                 value={order.paymentType}
                 onChange={(e) => onInputChange("paymentType", e.target.value)}
                 label={t("paymentType")}
@@ -202,6 +234,7 @@ const Order = () => {
               </Select>
               {order.paymentType === "pagoMovil" && (
                 <TextField
+                  size="small"
                   id="reference"
                   onChange={(e) => onInputChange("paymentId", e.target.value)}
                   label={t("reference")}
@@ -212,12 +245,14 @@ const Order = () => {
           )}
         </div>
 
-        <Button variant="outlined" onClick={onClear} color="error">
-          {t("reset")}
-        </Button>
-        <Button variant="contained" onClick={onSave}>
-          {t("save")}
-        </Button>
+        <div className="order-action-buttons">
+          <Button variant="outlined" onClick={onClear} color="error">
+            {t("reset")}
+          </Button>
+          <Button variant="contained" onClick={onSave}>
+            {t("save")}
+          </Button>
+        </div>
       </div>
 
       <AddProductModal

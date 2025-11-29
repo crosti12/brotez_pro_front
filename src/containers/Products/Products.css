@@ -4,8 +4,17 @@
   border-radius: 8px;
   height: 100%;
 }
+.product-datatable .p-datatable-header button {
+  height: 35px;
+}
+.product-datatable .p-datatable-header input {
+  padding: 0px 8px;
+  height: 35px;
+  padding: 0px 8px;
+}
 .product-datatable .p-datatable-header {
   padding: 0px 8px;
+  border-radius: 8px;
 }
 .product-table-header {
   display: flex;
@@ -35,6 +44,7 @@
   gap: 16px;
   width: 80vw;
   padding: 8px 12px;
+  border-radius: 8px;
 }
 .add-product-modal .MuiFormControl-root,
 .add-product-modal .MuiInputBase-root {

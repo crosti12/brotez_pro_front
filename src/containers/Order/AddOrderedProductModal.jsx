@@ -35,24 +35,32 @@ const AddOrderedProductModal = ({
   const onProductChange = (e, value) => {
     setData((prev) => {
       const newProduct = value;
-      return { ...prev, name: newProduct?.name || "", product: newProduct || {}, unit: newProduct?.unit || "" };
+      return {
+        ...prev,
+        name: newProduct?.name || "",
+        product: newProduct || {},
+        unit: newProduct?.unit || "",
+        quantity: newProduct?.unit === "kg" ? "0,000" : "",
+      };
     });
+  };
+  const onQuantityChange = (e) => {
+    const value = e.target.value;
+    data.unit === "kg" ? onFormatNumber(e) : setData((prev) => ({ ...prev, quantity: value }));
   };
 
   return (
     <Dialog open={visible} onClose={onClose}>
-      <div className="add-order-modal">
+      <div className="add-order-product">
         <p>{title}</p>
-        <div>
+        <div className="add-order-product-form">
           <Autocomplete
             disablePortal
             className="select-dropdown"
             options={memoProducts}
             onChange={onProductChange}
             getOptionLabel={(prod) => prod.name}
-            renderInput={(params) => (
-              <TextField {...params} onChange={(e) => console.log(e.target.value)} label="name" />
-            )}
+            renderInput={(params) => <TextField {...params} label="name" />}
           />
           <div className="flex">
             <TextField
@@ -60,19 +68,9 @@ const AddOrderedProductModal = ({
               value={data.quantity}
               onFocus={(e) => moveCursorToEnd(e.target)}
               onClick={(e) => moveCursorToEnd(e.target)}
-              onChange={onFormatNumber}
+              onChange={onQuantityChange}
             />
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={data.unit}
-              label="Age"
-              disabled={true}
-              onChange={(e) => setData((prev) => ({ ...prev, unit: e.target.value }))}
-            >
-              <MenuItem value={"kg"}>Kg</MenuItem>
-              <MenuItem value={"unit"}>{t("unit")}</MenuItem>
-            </Select>
+            <p className="new-order-product-unit">{data.unit}</p>
           </div>
         </div>
         <div className="flex gap-8 align-end">
@@ -86,7 +84,7 @@ const AddOrderedProductModal = ({
           >
             {t("save")}
           </Button>
-          <Button onClick={onClose} variant="outlined">
+          <Button onClick={onClose} color="error" variant="outlined">
             {t("cancel")}
           </Button>
         </div>
