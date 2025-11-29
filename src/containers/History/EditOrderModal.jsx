@@ -27,6 +27,11 @@ const EditOrderModal = ({
     setVisible(false);
   };
   if (!data?.products) return;
+  const dateFormat = (date) => {
+    const dateObj = new Date(date);
+
+    return format(dateObj, "yyyy-MM-dd HH:mm a");
+  };
 
   function ProductTable() {
     const tableData =
@@ -76,7 +81,7 @@ const EditOrderModal = ({
             </span>
             <span>
               <h1>{t("createdAt")}:</h1>
-              <p>{data?.createdAt.split("T")[0]}</p>
+              <p>{data?.createdAt && dateFormat(data?.createdAt)}</p>
             </span>
             <span>
               <h1>{t("total")}:</h1>
@@ -86,12 +91,18 @@ const EditOrderModal = ({
               <h1>{t("isDelivered")}:</h1>
               <p>{data?.isDelivered ? t("yes") : t("no")}</p>
             </span>
+            <span>
+              <h1>{t("orderId")}:</h1>
+              <p>{data?.orderId}</p>
+            </span>
             {data.isPaid && (
               <>
-                <span>
-                  <h1>{t("paymentId")}:</h1>
-                  <p>{data?.paymentId}</p>
-                </span>
+                {data?.paymentId && (
+                  <span>
+                    <h1>{t("paymentId")}:</h1>
+                    <p>{data?.paymentId}</p>
+                  </span>
+                )}
                 <span>
                   <h1>{t("paymentType")}:</h1>
                   <p>{data?.paymentType}</p>

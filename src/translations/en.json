@@ -34,6 +34,10 @@
   "yes": "Yes",
   "no": "No",
   "total": "Total",
+  "orderId": "Order Id",
+  "date": "Date",
+  "status": "Status",
+  "new": "New",
   "errorMsgs": {
     "productsMissing": "Please add at least one product",
     "referenceFieldMissing": "The reference field is missing",

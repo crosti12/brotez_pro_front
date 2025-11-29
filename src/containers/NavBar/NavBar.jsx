@@ -51,7 +51,7 @@ const NavBar = () => {
   return (
     <div className="navbar">
       {navButtons.map((btn, index) => (
-        <div style={btn.styles}>
+        <div style={btn.styles} key={btn.id}>
           {allowedViews[btn.id] && (
             <Button
               key={index}

@@ -15,6 +15,10 @@
   gap: 8px;
   justify-content: space-between;
   width: 100%;
+  position: sticky;
+  top: 60px;
+  z-index: 10;
+  background: white;
 }
 .new-order__product-add > span {
   font-size: 16px;
@@ -67,6 +71,9 @@
   border: 0.5px solid rgba(0, 0, 0, 0.253);
   padding: 4px;
   border-radius: 8px;
+}
+.order-switch * {
+  font-size: 12px !important;
 }
 .add-order-product-form {
   display: flex;

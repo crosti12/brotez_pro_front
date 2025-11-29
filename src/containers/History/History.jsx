@@ -79,7 +79,7 @@ const History = () => {
         currentPageReportTemplate="{first} to {last} of {totalRecords}"
       >
         <Column field="createdAt" dataType="date" body={dateFormat} header={t("date")} />
-        <Column field="author.username" header={t("creator")} />
+        <Column field="author.username" header={t("author")} />
         <Column field="total" header={t("total")} />
         <Column field="isPaid" body={statusTemplate} header={t("status")} />
       </DataTable>

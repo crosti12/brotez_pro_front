@@ -3,12 +3,14 @@ import Login from "./containers/Login/Login";
 import useGlobalState from "./actions/useGlobalState";
 import Routes from "./Routes";
 import useAPI from "./actions/useAPI";
+import { useTranslation } from "react-i18next";
 
 function App() {
   const { isLoggedIn, user } = useGlobalState();
   const { getProducts, getOrders } = useAPI();
-
+  const { i18n } = useTranslation();
   useEffect(() => {
+    i18n.changeLanguage(user?.language || "es");
     isLoggedIn &&
       (async () => {
         await getProducts();
