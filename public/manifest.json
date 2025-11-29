@@ -1,6 +1,6 @@
 {
-  "name": "Your App",
-  "short_name": "YourApp",
+  "name": "Brotez Management",
+  "short_name": "Brotez",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#ffffff",
