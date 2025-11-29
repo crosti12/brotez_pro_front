@@ -89,7 +89,10 @@
   width: 100%;
   padding: 8px 12px;
   border-radius: 8px;
+  overflow: auto;
+  width: 100%;
 }
+
 .product-edit-info {
   display: flex;
   flex-direction: column;
@@ -146,4 +149,10 @@
 }
 .client-name {
   width: 40%;
+}
+.new-order .MuiAccordionSummary-content {
+  width: 85%;
+}
+.new-order__product-list .MuiButtonBase-root {
+  padding: 0px 6px !important;
 }

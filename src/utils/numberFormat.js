@@ -28,5 +28,18 @@ export function sumCommaStrings(val1, val2) {
 }
 
 export function addDots(num) {
-  return new Intl.NumberFormat("de-DE").format(num);
+  if (typeof num === "number" && !isNaN(num)) {
+    return new Intl.NumberFormat("de-DE").format(num);
+  }
+
+  if (typeof num === "string") {
+    const cleaned = num.replace(/[^0-9.-]/g, "");
+    const parsed = parseFloat(cleaned);
+
+    if (!isNaN(parsed)) {
+      return new Intl.NumberFormat("de-DE").format(parsed);
+    }
+  }
+
+  return String(num ?? "");
 }

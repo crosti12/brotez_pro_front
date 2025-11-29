@@ -5,6 +5,11 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import useGlobalState from "../../actions/useGlobalState";
 import { PAYMENT_TYPES } from "../../contants";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import CancelIcon from "@mui/icons-material/Cancel";
+import { format } from "date-fns";
+import { addDots } from "../../utils/numberFormat";
 
 const EditOrderModal = ({
   visible = false,
@@ -23,85 +28,107 @@ const EditOrderModal = ({
   };
   if (!data?.products) return;
 
+  function ProductTable() {
+    const tableData =
+      data?.products?.map((orderedProduct) => {
+        const ordProId = orderedProduct.productId;
+        const product = products.find((pro) => pro._id === ordProId);
+
+        if (!product) {
+          return {
+            id: ordProId,
+            name: "-",
+            pricedAt: "-",
+            quantity: "-",
+          };
+        }
+
+        return {
+          id: ordProId,
+          name: product.name,
+          pricedAt: orderedProduct.pricedAt,
+          quantity: `${orderedProduct.quantity} ${product.unit}`,
+        };
+      }) ?? [];
+    const formatAddDecimals = (rowData) => addDots(rowData?.pricedAt || 0) + "/Bs";
+    return (
+      <DataTable className="edit-order-data-table" showGridlines value={tableData}>
+        <Column field="name" header={t("name")} />
+        <Column field="quantity" header={t("quantity")} />
+        <Column field="pricedAt" body={formatAddDecimals} header={t("pricedAt")} />
+      </DataTable>
+    );
+  }
+
   return (
     <Dialog open={visible} onClose={onClose}>
       <div className="edit-order-modal">
-        <p>{t("editOrder")}</p>
-        <div>
-          {data?.products?.map?.((orderedProduct) => {
-            const ordProId = orderedProduct.productId;
-            const product = products.find((pro) => pro._id === ordProId);
-            if (!product) return t("productNotFound") + " " + ordProId;
-
-            return (
-              <div>
-                <span>
-                  <h1>{t("name")}</h1>
-                  <p>{product.name}</p>
-                </span>
-                <span>
-                  <h1>{t("price")}</h1>
-                  <p>{product.price}</p>
-                </span>
-                <span>
-                  <h1>{t("quantity")}</h1>
-                  <p>{orderedProduct.quantity + " " + product.unit}</p>
-                </span>
-              </div>
-            );
-          })}
+        <div className="edit-order-modal-header">
+          <p className="edit-order-modal-title">{t("editOrder")}</p>
+          <CancelIcon onClick={onClose} sx={{ height: "30px", width: "30px" }} />
         </div>
-        <div>
-          <span>
-            <h1>t{"author"}</h1>
-            <p>{data?.author?.username}</p>
-          </span>
-          <span>
-            <h1>t{"createdAt"}</h1>
-            <p>{data?.createdAt.split("T")[0]}</p>
-          </span>
-          <span>
-            <h1>t{"total"}</h1>
-            <p>{data?.total}</p>
-          </span>
-          {data.isPaid && (
-            <>
-              <span>
-                <h1>t{"paymentId"}</h1>
-                <p>{data?.paymentId}</p>
-              </span>
-              <span>
-                <h1>t{"paymentType"}</h1>
-                <p>{data?.paymentType}</p>
-              </span>
-            </>
+        <div className="product-list-container">{ProductTable({ data, products, t })}</div>
+        <div className="user-and-payment-info">
+          <div className="product-info">
+            <span>
+              <h1>{t("author")}:</h1>
+              <p>{data?.author?.username}</p>
+            </span>
+            <span>
+              <h1>{t("createdAt")}:</h1>
+              <p>{data?.createdAt.split("T")[0]}</p>
+            </span>
+            <span>
+              <h1>{t("total")}:</h1>
+              <p>{addDots(data?.total || 0)}/Bs</p>
+            </span>
+            <span>
+              <h1>{t("isDelivered")}:</h1>
+              <p>{data?.isDelivered ? t("yes") : t("no")}</p>
+            </span>
+            {data.isPaid && (
+              <>
+                <span>
+                  <h1>{t("paymentId")}:</h1>
+                  <p>{data?.paymentId}</p>
+                </span>
+                <span>
+                  <h1>{t("paymentType")}:</h1>
+                  <p>{data?.paymentType}</p>
+                </span>
+              </>
+            )}
+          </div>
+
+          {!data.isPaid && (
+            <div className="input-payment">
+              <div className="flex gap-8">
+                <Select
+                  size="small"
+                  onChange={(e) => setPaymentInf({ ...paymentInf, paymentType: e.target.value })}
+                  value={paymentInf.paymentType || PAYMENT_TYPES[0]}
+                  label={t("paymentType")}
+                >
+                  {PAYMENT_TYPES.map((payT) => (
+                    <MenuItem value={payT}>{t(payT)}</MenuItem>
+                  ))}
+                </Select>
+
+                {(paymentInf.paymentType || PAYMENT_TYPES[0]) === "pagoMovil" && (
+                  <TextField
+                    size="small"
+                    label={t("reference")}
+                    onChange={(e) => setPaymentInf({ ...paymentInf, paymentId: e.target.value })}
+                  />
+                )}
+              </div>
+
+              <Button size="small" variant="contained" onClick={onSave}>
+                {t("save")}
+              </Button>
+            </div>
           )}
         </div>
-
-        {!data.isPaid && (
-          <div>
-            <Select
-              onChange={(e) => setPaymentInf({ ...paymentInf, paymentType: e.target.value })}
-              value={paymentInf.paymentType || PAYMENT_TYPES[0]}
-              label={t("paymentType")}
-            >
-              {PAYMENT_TYPES.map((payT) => (
-                <MenuItem value={payT}>{t(payT)}</MenuItem>
-              ))}
-            </Select>
-
-            {(paymentInf.paymentType || PAYMENT_TYPES[0]) === "pagoMovil" && (
-              <TextField
-                label={t("reference")}
-                onChange={(e) => setPaymentInf({ ...paymentInf, paymentId: e.target.value })}
-              />
-            )}
-
-            <Button variant="contained" onClick={onSave}>
-              {t("save")}
-            </Button>
-          </div>
-        )}
       </div>
     </Dialog>
   );

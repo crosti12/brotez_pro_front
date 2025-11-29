@@ -5,6 +5,12 @@ import useGlobalState from "../../actions/useGlobalState";
 import useAPI from "../../actions/useAPI";
 import EditOrderModal from "./EditOrderModal";
 import { PAYMENT_TYPES } from "../../contants";
+import TextField from "@mui/material/TextField";
+import { format } from "date-fns";
+import "./History.css";
+import ArrowBackIcon from "@mui/icons-material/ArrowBackIos";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForwardIos";
+import Button from "@mui/material/Button";
 
 const History = () => {
   const { updateOrder } = useAPI();
@@ -12,6 +18,7 @@ const History = () => {
   const [dataidx, setDataIdx] = useState(null);
   const [paymentInf, setPaymentInf] = useState({ paymentType: PAYMENT_TYPES[0], paymentId: "" });
   const { t, orders } = useGlobalState();
+  const [globalFilter, setGlobalFilter] = useState("");
 
   const onPayingDetailsSubmit = async () => {
     if (!paymentInf.paymentType || (paymentInf.paymentType === "pagoMovil" && !paymentInf.paymentId)) return;
@@ -19,17 +26,59 @@ const History = () => {
     resp;
   };
 
+  const header = (
+    <div className="product-table-header">
+      <TextField
+        variant="outlined"
+        size="small"
+        placeholder={t("Search")}
+        value={globalFilter}
+        onChange={(e) => setGlobalFilter(e.target.value)}
+      />
+    </div>
+  );
+
+  const dateFormat = (rowData) => {
+    const date = new Date(rowData.createdAt);
+
+    return format(date, "yyyy-MM-dd HH:mm a");
+  };
   const onRowclik = (rowData) => {
     setDataIdx(rowData.index);
     setOpenEditOrderModal(true);
   };
 
-  const statusTemplate = (rowData) => (rowData.isPaid ? t("paid") : t("pending"));
+  const statusTemplate = (rowData) => (
+    <span style={{ color: rowData.isPaid ? "green" : "#a3a107" }}>{rowData.isPaid ? t("paid") : t("pending")}</span>
+  );
 
   return (
-    <div>
-      <DataTable onRowClick={onRowclik} showGridlines={true} value={orders}>
-        <Column field="orderId" header={t("id")} />
+    <div className="history-main">
+      <DataTable
+        className="order-data-table"
+        header={header}
+        onRowClick={onRowclik}
+        showGridlines={true}
+        value={orders}
+        globalFilter={globalFilter}
+        paginator
+        rows={8}
+        paginatorTemplate={{
+          layout: "PrevPageLink CurrentPageReport NextPageLink",
+          PrevPageLink: (options) => (
+            <Button {...options}>
+              <ArrowBackIcon />
+            </Button>
+          ),
+          NextPageLink: (options) => (
+            <Button {...options}>
+              <ArrowForwardIcon />
+            </Button>
+          ),
+        }}
+        currentPageReportTemplate="{first} to {last} of {totalRecords}"
+      >
+        <Column field="createdAt" dataType="date" body={dateFormat} header={t("date")} />
         <Column field="author.username" header={t("creator")} />
         <Column field="total" header={t("total")} />
         <Column field="isPaid" body={statusTemplate} header={t("status")} />

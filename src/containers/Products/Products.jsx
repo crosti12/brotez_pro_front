@@ -1,5 +1,4 @@
 import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField"; // <-- add this
 import "./Products.css";
 import useGlobalState from "../../actions/useGlobalState";
@@ -7,6 +6,8 @@ import { useState } from "react";
 import AddProductModal from "./AddProductModal";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
+import ArrowBackIcon from "@mui/icons-material/ArrowBackIos";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForwardIos";
 
 const initialState = {
   name: "",
@@ -24,7 +25,14 @@ const Products = () => {
   const [globalFilter, setGlobalFilter] = useState("");
 
   const addButton = (
-    <Button className="add-product" onClick={() => setOpenAddProductModal(true)} variant="contained">
+    <Button
+      className="add-product"
+      onClick={() => {
+        setOpenAddProductModal(true);
+        setModalMode("new");
+      }}
+      variant="contained"
+    >
       {t("new")}
     </Button>
   );
@@ -51,7 +59,29 @@ const Products = () => {
   return (
     <div className="product-datatable">
       {products?.length > 0 ? (
-        <DataTable value={products} header={header} globalFilter={globalFilter} onRowClick={onRowClick} showGridlines>
+        <DataTable
+          paginator
+          rows={8}
+          paginatorTemplate={{
+            layout: "PrevPageLink CurrentPageReport NextPageLink",
+            PrevPageLink: (options) => (
+              <Button {...options}>
+                <ArrowBackIcon />
+              </Button>
+            ),
+            NextPageLink: (options) => (
+              <Button {...options}>
+                <ArrowForwardIcon />
+              </Button>
+            ),
+          }}
+          currentPageReportTemplate="{first} to {last} of {totalRecords}"
+          value={products}
+          header={header}
+          globalFilter={globalFilter}
+          onRowClick={onRowClick}
+          showGridlines
+        >
           <Column field="name" header={t("name")} />
           <Column field="productType" header={t("productType")} />
           <Column field="price" header={t("price")} />

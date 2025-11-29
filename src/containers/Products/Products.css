@@ -59,7 +59,7 @@
   padding: 4px;
   border-radius: 8px;
   font-weight: 700;
-  color: gray;
+  color: rgb(170, 170, 170);
 }
 .add-product-modal-header p {
   text-align: center;

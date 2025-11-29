@@ -1,0 +1,89 @@
+.history-main {
+  height: 100%;
+}
+
+.order-data-table {
+  padding: 8px;
+  background-color: white;
+  border-radius: 8px;
+  height: 100%;
+}
+.order-data-table tr > * {
+  padding: 8px;
+  font-size: 12px;
+}
+.order-data-table tr > td {
+  height: 40px;
+}
+
+.edit-order-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 80vw;
+  padding: 8px 12px;
+  background-color: white;
+  border-radius: 8px;
+  height: 80ch;
+}
+.edit-order-modal-header {
+  display: flex;
+  color: rgb(170, 170, 170);
+}
+.edit-order-modal-title {
+  text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+  color: var(--accent-color);
+  justify-content: space-between;
+  width: 100%;
+}
+.edit-order-modal-header svg {
+  position: relative;
+  bottom: 5px;
+}
+.product-list-container {
+  height: 40vh;
+  border-bottom: 1px solid rgba(172, 171, 171, 0.5);
+  overflow: auto;
+}
+.product-list-item,
+.product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.product-list-item > span,
+.product-info > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+.product-list-item h1,
+.product-info h1 {
+  font-size: 12px;
+}
+.edit-order-data-table {
+  font-size: 12px;
+}
+
+.edit-order-data-table th,
+.edit-order-data-table td {
+  padding: 4px;
+}
+.user-and-payment-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+}
+.input-payment {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: auto;
+}
+.input-payment * {
+  font-size: 12px !important;
+}

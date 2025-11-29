@@ -1,5 +1,5 @@
 import { TextField, Button } from "@mui/material";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import useAPI from "../../actions/useAPI";
 import "./Login.css";
 import { useTranslation } from "react-i18next";
@@ -10,7 +10,7 @@ const Login = () => {
   const [values, setValues] = useState({ password: "", username: "" });
   const { setUser, setIsLoggedIn } = useGlobalState();
   const { onLogin } = useAPI();
-
+  const loginRef = useRef(null);
   const onInputChange = (e) => setValues({ ...values, [e.target.id]: e.target.value });
 
   const onSubmit = async () => {
@@ -18,6 +18,12 @@ const Login = () => {
     if (!resp) return;
     setUser(resp.user);
     setIsLoggedIn(true);
+  };
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      loginRef.current?.click();
+    }
   };
 
   return (
@@ -30,6 +36,7 @@ const Login = () => {
           placeholder={t("username")}
           onChange={onInputChange}
           value={values.username}
+          onKeyDown={handleKeyDown}
         />
         <TextField
           className="login-input"
@@ -38,8 +45,9 @@ const Login = () => {
           type="password"
           onChange={onInputChange}
           value={values.password}
+          onKeyDown={handleKeyDown}
         />
-        <Button variant="contained" onClick={onSubmit}>
+        <Button ref={loginRef} variant="contained" onClick={onSubmit}>
           {t("login")}
         </Button>
       </div>

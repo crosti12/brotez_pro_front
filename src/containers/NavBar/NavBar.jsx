@@ -7,7 +7,7 @@ import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import useGlobalState from "../../actions/useGlobalState";
 import AssignmentIndIcon from "@mui/icons-material/PersonAddAltOutlined";
 const ADD_SIZE = "50px";
-const BUTTON_SIZE = "25px";
+const BUTTON_SIZE = "30px";
 
 const navButtons = [
   {

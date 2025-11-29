@@ -79,7 +79,9 @@ const Order = () => {
     const body = {
       ...order,
       products: localProducts
-        .map((pro) => pro.quantity && { productId: pro.product._id, quantity: pro.quantity })
+        .map(
+          (pro) => pro.quantity && { productId: pro.product._id, quantity: pro.quantity, pricedAt: pro?.product?.price }
+        )
         .filter(Boolean),
       author: user.id,
       total,
