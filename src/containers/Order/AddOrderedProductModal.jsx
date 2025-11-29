@@ -65,7 +65,8 @@ const AddOrderedProductModal = ({
           <div className="flex">
             <TextField
               inputMode="numeric"
-              value={data.quantity}
+              type="number"
+              value={parseFloat(data.quantity.replace(",", ".")).toFixed(3)}
               onFocus={(e) => moveCursorToEnd(e.target)}
               onClick={(e) => moveCursorToEnd(e.target)}
               onChange={onQuantityChange}

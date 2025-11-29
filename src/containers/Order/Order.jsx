@@ -134,8 +134,9 @@ const Order = () => {
               <div className="product-edit-info">
                 {orderProduct.unit === "kg" ? (
                   <TextField
-                    value={orderProduct.quantity}
+                    value={parseFloat(orderProduct.quantity.replace(",", ".")).toFixed(3)}
                     inputMode="numeric"
+                    type="number"
                     onChange={(e) => onProductChange(onFormatNumber(e.target.value), "quantity", index)}
                     label={t("quantity")}
                     onFocus={(e) => moveCursorToEnd(e.target)}

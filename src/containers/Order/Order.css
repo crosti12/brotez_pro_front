@@ -32,6 +32,7 @@
   width: 80vw;
   height: 80vh;
   padding: 8px 12px;
+  gap: 50px;
 }
 .add-order-product > p {
   font-size: 16px;
@@ -79,6 +80,7 @@
   flex-direction: column;
   gap: 16px;
   width: 100%;
+  gap: 16px;
 }
 .new-order-product-unit {
   display: flex;
