@@ -42,6 +42,10 @@
   "paymentRegistered": "Payment registered successfully!!",
   "orderNotDeleted": "Order not deleted!!",
   "orderDeleted": "Order deleted successfully!!",
+  "settings": "Settings",
+  "language": "Language",
+  "reset": "Reset",
+  "save": "Save",
   "errorMsgs": {
     "productsMissing": "Please add at least one product",
     "referenceFieldMissing": "The reference field is missing",

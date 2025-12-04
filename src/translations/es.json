@@ -42,6 +42,10 @@
   "paymentRegistered": "Pago registrado exitosamente!",
   "orderNotDeleted": "El pedido no pudo ser eliminado",
   "orderDeleted": "El pedido fue eliminado exitosamente!",
+  "settings": "Configuraciones",
+  "language": "Idioma",
+  "reset": "Restablecer",
+  "save": "Guardar",
   "errorMsgs": {
     "productsMissing": "Por favor agregue al menos un producto",
     "referenceFieldMissing": "Falta el campo de referencia",
