@@ -91,7 +91,11 @@ const History = () => {
       >
         <Column field="createdAt" dataType="date" body={dateFormat} header={t("date")} />
         <Column field="author.username" header={t("author")} />
-        <Column field="total" header={t("total")} />
+        <Column
+          field="total"
+          body={(rowData) => <div className="history-total-ellipsis">{rowData.total}</div>}
+          header={t("total")}
+        />
         <Column field="isPaid" body={statusTemplate} header={t("status")} />
       </DataTable>
 

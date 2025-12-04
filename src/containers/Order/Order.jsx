@@ -29,6 +29,7 @@ const Order = () => {
     products,
     orderType,
     setOrderType,
+    productsWithDeleted,
   } = useGlobalState();
 
   const totalPrice = useRef(null);
@@ -135,8 +136,8 @@ const Order = () => {
   const getproducList = () => {
     const result = localProducts.reduce(
       (acc, orderProduct, index) => {
-        const stateProduct = products.find((pro) => pro._id === orderProduct.product._id);
-        if (!stateProduct) return;
+        const stateProduct = productsWithDeleted.find((pro) => pro._id === orderProduct.product._id);
+        if (!stateProduct) return acc;
         const sumResult = calculate("multiply", stateProduct.price, orderProduct.quantity);
         const orderProductPrice = !Number.isNaN(sumResult) ? sumResult : 0;
 
@@ -144,7 +145,7 @@ const Order = () => {
           <Accordion key={orderProduct.name}>
             <AccordionSummary expandIcon={<HighlightOffIcon onClick={(e) => onDeleteProduct(e, index)} />}>
               <div className="ordered-product-details">
-                <span className="ordered-product-detail-name">{orderProduct.name}: </span>
+                <span className="ordered-product-detail-name">{orderProduct.name}:</span>
                 <span className="flex">
                   <p>{orderProduct.quantity || 0}/</p>
                   <p>{t(orderProduct.unit)}</p>

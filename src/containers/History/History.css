@@ -103,3 +103,9 @@
   text-overflow: ellipsis;
   max-width: 140px;
 }
+.history-total-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 50px;
+}
