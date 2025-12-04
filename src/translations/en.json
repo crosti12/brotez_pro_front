@@ -1,6 +1,7 @@
 {
   "username": "Username",
   "password": "Password",
+  "viewOrder": "View Order",
   "login": "Login",
   "isPaid": "Paid?",
   "clientName": "Client name",
@@ -38,12 +39,16 @@
   "date": "Date",
   "status": "Status",
   "new": "New",
+  "paymentRegistered": "Payment registered successfully!!",
+  "orderNotDeleted": "Order not deleted!!",
+  "orderDeleted": "Order deleted successfully!!",
   "errorMsgs": {
     "productsMissing": "Please add at least one product",
     "referenceFieldMissing": "The reference field is missing",
     "clientPhoneMissing": "The client phone field is missing",
     "clientNameMissing": "The client name field is missing",
     "priceMissing": "The price field is missing",
-    "nameMissing": "The name field is missing"
+    "nameMissing": "The name field is missing",
+    "paymentIdMissing": "The payment id field is missing"
   }
 }

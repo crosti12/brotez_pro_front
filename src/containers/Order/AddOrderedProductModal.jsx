@@ -1,8 +1,6 @@
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import TextField from "@mui/material/TextField";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
 import Autocomplete from "@mui/material/Autocomplete";
 import useGlobalState from "../../actions/useGlobalState";
 import { useMemo, useState } from "react";
@@ -50,7 +48,19 @@ const AddOrderedProductModal = ({
   };
 
   return (
-    <Dialog open={visible} onClose={onClose}>
+    <Dialog
+      PaperProps={{
+        sx: {
+          margin: 0,
+          position: "absolute",
+          top: 0,
+          left: "50%",
+          transform: "translateX(-50%)",
+        },
+      }}
+      open={visible}
+      onClose={onClose}
+    >
       <div className="add-order-product">
         <p>{title}</p>
         <div className="add-order-product-form">

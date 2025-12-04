@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import useReq from "../components/useReq";
-import { setOrders, setProducts } from "./stateSlice";
+import { setOrders, setProducts, setProductsWithDeleted, setUser } from "./stateSlice";
 
 const useAPI = () => {
   const dispatch = useDispatch();
@@ -12,7 +12,10 @@ const useAPI = () => {
   const getProducts = async () => {
     try {
       const resp = await getReq({ params: "products" });
-      if (resp) dispatch(setProducts(resp));
+      if (resp) {
+        dispatch(setProducts(resp.filter((pro) => !pro?.isDeleted)));
+        dispatch(setProductsWithDeleted(resp));
+      }
       return resp;
     } catch (error) {
       console.error(error);
@@ -52,7 +55,10 @@ const useAPI = () => {
       delete body._id;
       delete body.createdAt;
       const resp = await putReq({ params: `products/id/${id}`, body });
-      if (resp) dispatch(setProducts(resp));
+      if (resp) {
+        dispatch(setProducts(resp.filter((pro) => !pro?.isDeleted)));
+        dispatch(setProductsWithDeleted(resp));
+      }
       return resp;
     } catch (error) {
       console.error(error);
@@ -63,7 +69,10 @@ const useAPI = () => {
     const id = data._id;
     try {
       const resp = await deleteReq({ params: `products/id/${id}` });
-      if (resp) dispatch(setProducts(resp));
+      if (resp) {
+        dispatch(setProducts(resp.filter((pro) => !pro?.isDeleted)));
+        dispatch(setProductsWithDeleted(resp));
+      }
       return resp;
     } catch (error) {
       console.error(error);
@@ -94,12 +103,44 @@ const useAPI = () => {
     try {
       const resp = await putReq({ params: `orders/id/${id}`, body: updatedInfo });
       resp && dispatch(setOrders(resp));
+      return resp;
     } catch (error) {
       console.error(error);
     }
   };
 
-  return { getProducts, onLogin, onCreateProduct, updateOrder, createOrder, getOrders, updateProduct, deleteProduct };
+  const deleteOrder = async (id) => {
+    try {
+      const resp = await deleteReq({ params: `orders/id/${id}` });
+      resp && dispatch(setOrders(resp));
+      return resp;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const updateUser = async (newData, id) => {
+    try {
+      const resp = await putReq({ params: "users/id/" + id, body: newData });
+      resp && dispatch(setUser(resp));
+      return resp;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return {
+    getProducts,
+    updateUser,
+    onLogin,
+    onCreateProduct,
+    updateOrder,
+    deleteOrder,
+    createOrder,
+    getOrders,
+    updateProduct,
+    deleteProduct,
+  };
 };
 
 export default useAPI;

@@ -15,7 +15,7 @@ import "./Order.css";
 import { Button } from "@mui/material";
 import useAPI from "../../actions/useAPI";
 import useGlobalState from "../../actions/useGlobalState";
-import { PAYMENT_TYPES } from "../../contants";
+import { PAYMENT_TYPES } from "../../constants";
 
 const Order = () => {
   const { t } = useTranslation();
@@ -82,7 +82,12 @@ const Order = () => {
       ...order,
       products: localProducts
         .map(
-          (pro) => pro.quantity && { productId: pro.product._id, quantity: pro.quantity, pricedAt: pro?.product?.price }
+          (pro) =>
+            pro.quantity && {
+              productId: pro.product._id,
+              quantity: pro.quantity,
+              pricedAt: products.find((product) => product._id === pro?.product?._id)?.price,
+            }
         )
         .filter(Boolean),
       author: user.id,

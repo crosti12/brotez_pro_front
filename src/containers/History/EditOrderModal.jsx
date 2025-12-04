@@ -4,16 +4,18 @@ import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import useGlobalState from "../../actions/useGlobalState";
-import { PAYMENT_TYPES } from "../../contants";
+import { PAYMENT_TYPES } from "../../constants";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { format } from "date-fns";
 import { addDots } from "../../utils/numberFormat";
+import { useState } from "react";
 
 const EditOrderModal = ({
   visible = false,
   onSave = () => {},
+  onDelete = () => {},
   setVisible = () => {},
   t = () => {},
   data = {},
@@ -21,41 +23,56 @@ const EditOrderModal = ({
   paymentInf = {},
   setPaymentInf = () => {},
 }) => {
-  const { products } = useGlobalState();
+  const { user, productsWithDeleted } = useGlobalState();
+  const [loading, setIsloading] = useState(false);
   const onClose = () => {
     setData(null);
     setVisible(false);
+    setIsloading(false);
   };
+
   if (!data?.products) return;
+
   const dateFormat = (date) => {
     const dateObj = new Date(date);
 
     return format(dateObj, "yyyy-MM-dd HH:mm a");
   };
 
+  const onDeleteOrder = async () => {
+    setIsloading(true);
+    const resp = await onDelete();
+    if (resp) {
+      onClose();
+    }
+    setIsloading(false);
+  };
+
   function ProductTable() {
     const tableData =
       data?.products?.map((orderedProduct) => {
         const ordProId = orderedProduct.productId;
-        const product = products.find((pro) => pro._id === ordProId);
+        const product = productsWithDeleted.find((pro) => pro._id === ordProId);
 
         if (!product) {
           return {
             id: ordProId,
-            name: "-",
-            pricedAt: "-",
-            quantity: "-",
+            name: "not-found",
+            pricedAt: "0",
+            quantity: "0",
           };
         }
 
         return {
           id: ordProId,
-          name: product.name,
+          name: product.name + (product?.isDeleted ? " (D)" : ""),
           pricedAt: orderedProduct.pricedAt,
           quantity: `${orderedProduct.quantity} ${product.unit}`,
         };
       }) ?? [];
+
     const formatAddDecimals = (rowData) => addDots(rowData?.pricedAt || 0) + "/Bs";
+
     return (
       <DataTable className="edit-order-data-table" showGridlines value={tableData}>
         <Column field="name" header={t("name")} />
@@ -64,15 +81,36 @@ const EditOrderModal = ({
       </DataTable>
     );
   }
+  const onSaveOrderModal = () => {
+    setIsloading(true);
+    let resp = true;
+    if (!data.isPaid) {
+      resp = onSave();
+    }
+    setIsloading(false);
+    resp && onClose();
+  };
 
   return (
-    <Dialog open={visible} onClose={onClose}>
+    <Dialog
+      PaperProps={{
+        sx: {
+          margin: 0,
+          position: "absolute",
+          top: 0,
+          left: "50%",
+          transform: "translateX(-50%)",
+        },
+      }}
+      open={visible}
+      onClose={onClose}
+    >
       <div className="edit-order-modal">
         <div className="edit-order-modal-header">
-          <p className="edit-order-modal-title">{t("editOrder")}</p>
+          <p className="edit-order-modal-title">{data.isPaid ? t("viewOrder") : t("editOrder")}</p>
           <CancelIcon onClick={onClose} sx={{ height: "30px", width: "30px" }} />
         </div>
-        <div className="product-list-container">{ProductTable({ data, products, t })}</div>
+        <div className="product-list-container">{ProductTable({ data, productsWithDeleted, t })}</div>
         <div className="user-and-payment-info">
           <div className="product-info">
             <span>
@@ -95,14 +133,18 @@ const EditOrderModal = ({
               <h1>{t("orderId")}:</h1>
               <p>{data?.orderId}</p>
             </span>
-            <span>
-              <h1>{t("clientName")}:</h1>
-              <p>{data?.clientName}</p>
-            </span>
-            <span>
-              <h1>{t("clientPhone")}:</h1>
-              <p>{data?.clientPhone}</p>
-            </span>
+            {data?.clientName && (
+              <span>
+                <h1>{t("clientName")}:</h1>
+                <p>{data?.clientName}</p>
+              </span>
+            )}
+            {data?.clientPhone && (
+              <span>
+                <h1>{t("clientPhone")}:</h1>
+                <p>{data?.clientPhone}</p>
+              </span>
+            )}
             {data.isPaid && (
               <>
                 {data?.paymentId && (
@@ -141,12 +183,26 @@ const EditOrderModal = ({
                   />
                 )}
               </div>
-
-              <Button size="small" variant="contained" onClick={onSave}>
-                {t("save")}
-              </Button>
             </div>
           )}
+          <div className="history-modal-action-btns">
+            {user?.permissions?.deleteOrder && (
+              <Button
+                loading={loading}
+                disabled={loading}
+                size="small"
+                color="error"
+                variant="contained"
+                onClick={onDeleteOrder}
+              >
+                {t("delete")}
+              </Button>
+            )}
+
+            <Button size="small" loading={loading} disabled={loading} variant="contained" onClick={onSaveOrderModal}>
+              {t("save")}
+            </Button>
+          </div>
         </div>
       </div>
     </Dialog>

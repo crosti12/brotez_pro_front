@@ -1,6 +1,7 @@
 {
   "username": "Usuario",
   "password": "Contraseña",
+  "viewOrder": "Ver pedido",
   "login": "Iniciar sesión",
   "isPaid": "¿Pagado?",
   "clientName": "Nombre del cliente",
@@ -38,12 +39,16 @@
   "date": "Fecha",
   "status": "Estado",
   "new": "Nuevo",
+  "paymentRegistered": "Pago registrado exitosamente!",
+  "orderNotDeleted": "El pedido no pudo ser eliminado",
+  "orderDeleted": "El pedido fue eliminado exitosamente!",
   "errorMsgs": {
     "productsMissing": "Por favor agregue al menos un producto",
     "referenceFieldMissing": "Falta el campo de referencia",
     "clientPhoneMissing": "Falta el campo de teléfono del cliente",
     "clientNameMissing": "Falta el campo de nombre del cliente",
     "priceMissing": "Falta el campo de precio",
-    "nameMissing": "Falta el campo de nombre"
+    "nameMissing": "Falta el campo de nombre",
+    "paymentIdMissing": "Falta el campo de ID de pago"
   }
 }

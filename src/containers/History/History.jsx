@@ -4,7 +4,7 @@ import { Column } from "primereact/column";
 import useGlobalState from "../../actions/useGlobalState";
 import useAPI from "../../actions/useAPI";
 import EditOrderModal from "./EditOrderModal";
-import { PAYMENT_TYPES } from "../../contants";
+import { PAYMENT_TYPES } from "../../constants";
 import TextField from "@mui/material/TextField";
 import { format } from "date-fns";
 import "./History.css";
@@ -13,17 +13,28 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForwardIos";
 import Button from "@mui/material/Button";
 
 const History = () => {
-  const { updateOrder } = useAPI();
+  const { updateOrder, deleteOrder } = useAPI();
   const [openEditOrderModal, setOpenEditOrderModal] = useState("");
   const [dataidx, setDataIdx] = useState(null);
   const [paymentInf, setPaymentInf] = useState({ paymentType: PAYMENT_TYPES[0], paymentId: "" });
-  const { t, orders } = useGlobalState();
+  const { t, orders, showMessage } = useGlobalState();
   const [globalFilter, setGlobalFilter] = useState("");
 
   const onPayingDetailsSubmit = async () => {
-    if (!paymentInf.paymentType || (paymentInf.paymentType === "pagoMovil" && !paymentInf.paymentId)) return;
+    if (!paymentInf.paymentType || (paymentInf.paymentType === "pagoMovil" && !paymentInf.paymentId)) {
+      showMessage(t("errorMsgs.referenceFieldMissing"), "warn");
+      return false;
+    }
     const resp = await updateOrder({ ...paymentInf, isPaid: true }, orders[dataidx]._id);
-    resp;
+    if (resp) showMessage(t("paymentRegistered"), "success");
+    return resp;
+  };
+
+  const onDelete = async () => {
+    const resp = await deleteOrder(orders[dataidx]._id);
+    if (resp) showMessage(t("orderDeleted"), "success");
+    else showMessage(t("orderNotDeleted"), "warn");
+    return resp;
   };
 
   const header = (
@@ -93,6 +104,7 @@ const History = () => {
         t={t}
         onSave={onPayingDetailsSubmit}
         setVisible={setOpenEditOrderModal}
+        onDelete={onDelete}
       />
     </div>
   );

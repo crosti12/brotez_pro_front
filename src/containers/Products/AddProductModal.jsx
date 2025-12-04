@@ -8,13 +8,16 @@ import useAPI from "../../actions/useAPI";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DoneIcon from "@mui/icons-material/Done";
 import CancelIcon from "@mui/icons-material/Cancel";
+import { useState } from "react";
 
 const AddProductModal = ({ visible = false, setVisible = () => {}, mode = "", data, setData, initialState }) => {
   const { user, t, showMessage } = useGlobalState();
   const { onCreateProduct, updateProduct, deleteProduct } = useAPI();
   const resetState = () => setData(() => initialState);
+  const [loading, setIsloading] = useState(false);
 
   const onSave = async () => {
+    setIsloading(true);
     if (!data.price) return showMessage(t("errorMsgs.priceMissing"), "warn");
     if (!data.name) return showMessage(t("errorMsgs.nameMissing"), "warn");
 
@@ -27,24 +30,42 @@ const AddProductModal = ({ visible = false, setVisible = () => {}, mode = "", da
       showMessage(t("productSaved"), "success");
       setVisible(false);
       resetState();
+      setIsloading(false);
     }
+    setIsloading(false);
   };
 
   const onClose = () => {
     setVisible(false);
     resetState();
+    setIsloading(false);
   };
 
   const onDelete = async () => {
+    setIsloading(true);
     const resp = await deleteProduct(data);
     if (resp) {
       resetState();
       showMessage(t("productDeleted"), "success");
       setVisible(false);
     }
+    setIsloading(false);
   };
+
   return (
-    <Dialog open={visible} onClose={onClose}>
+    <Dialog
+      PaperProps={{
+        sx: {
+          margin: 0,
+          position: "absolute",
+          top: 0,
+          left: "50%",
+          transform: "translateX(-50%)",
+        },
+      }}
+      open={visible}
+      onClose={onClose}
+    >
       <div className="add-product-modal">
         <div className="add-product-modal-header">
           <p>{t("addProduct")}</p>
@@ -82,10 +103,24 @@ const AddProductModal = ({ visible = false, setVisible = () => {}, mode = "", da
           />
         )}
         <div className="add-product-modal-actions">
-          <Button onClick={onDelete} color="error" variant="contained" startIcon={<DeleteIcon />}>
+          <Button
+            onClick={onDelete}
+            disabled={loading}
+            loading={loading}
+            color="error"
+            variant="contained"
+            startIcon={<DeleteIcon />}
+          >
             {t("delete")}
           </Button>
-          <Button endIcon={<DoneIcon />} color="success" variant="contained" onClick={onSave}>
+          <Button
+            endIcon={<DoneIcon />}
+            loading={loading}
+            disabled={loading}
+            color="success"
+            variant="contained"
+            onClick={onSave}
+          >
             {t("accept")}
           </Button>
         </div>

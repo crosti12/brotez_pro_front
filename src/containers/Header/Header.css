@@ -12,11 +12,61 @@
   position: sticky;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
 .setting-icon {
   margin-left: auto;
 }
-
 .setting-icon path {
   fill: var(--accent-color);
+}
+.open-settings-btn {
+  margin-left: auto;
+  margin-right: 4px;
+}
+.setting-modal {
+  width: 80vw;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 10px;
+}
+.setting-moda-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.setting-moda-header p {
+  width: 100%;
+  text-align: center;
+  position: relative;
+  left: 10px;
+}
+.setting-moda-header span {
+  margin-left: auto;
+}
+.seting-modal-footer {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+  padding: 0px 10px;
+}
+.setting-modal-setup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 8px;
+  border-radius: 8px;
+  padding: 12px;
+}
+.setup-row {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+.setup-row > * {
+  width: 100%;
 }

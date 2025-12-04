@@ -10,12 +10,15 @@ function App() {
   const { getProducts, getOrders } = useAPI();
   const { i18n } = useTranslation();
   useEffect(() => {
-    i18n.changeLanguage(user?.language || "es");
     isLoggedIn &&
       (async () => {
         await getProducts();
         await getOrders();
       })();
+  }, []);
+
+  useEffect(() => {
+    i18n.changeLanguage(user?.language || "es");
   }, [user]);
 
   return <div className="main-layout">{isLoggedIn ? <Routes /> : <Login />}</div>;

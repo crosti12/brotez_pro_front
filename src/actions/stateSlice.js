@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { PAYMENT_TYPES } from "../contants";
+import { PAYMENT_TYPES } from "../constants";
 const EXPIRATION_TIME = 24 * 60 * 60 * 1000;
 
 const isTokenValid = () => {
@@ -21,6 +21,7 @@ const initialState = {
     paymentType: PAYMENT_TYPES[0],
     isPaid: true,
   },
+  productsWithDeleted: [],
   showNotification: false,
   notificationMessage: "",
   isLoggedIn: isTokenValid(),
@@ -56,11 +57,15 @@ const globalSlice = createSlice({
     setIsLoggedIn: (state, action) => {
       state.isLoggedIn = action.payload;
     },
+    setProductsWithDeleted: (state, action) => {
+      state.productsWithDeleted = action.payload;
+    },
   },
 });
 
 export const {
   setUser,
+  setProductsWithDeleted,
   setView,
   setIsLoggedIn,
   setProducts,

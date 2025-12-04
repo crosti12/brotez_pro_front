@@ -24,7 +24,7 @@
   padding: 8px 12px;
   background-color: white;
   border-radius: 8px;
-  height: 80ch;
+  min-height: 50ch;
 }
 .edit-order-modal-header {
   display: flex;
@@ -43,7 +43,7 @@
   bottom: 5px;
 }
 .product-list-container {
-  height: 40vh;
+  height: 30vh;
   border-bottom: 1px solid rgba(172, 171, 171, 0.5);
   overflow: auto;
 }
@@ -82,8 +82,14 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-top: auto;
+  margin-top: 16px;
 }
 .input-payment * {
   font-size: 12px !important;
+}
+.history-modal-action-btns {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-top: 22px;
 }
