@@ -8,6 +8,7 @@ import {
   setShowNotification,
   setNotificationMessage,
   setIsLoggedIn,
+  setOrderType,
 } from "./stateSlice";
 import { useTranslation } from "react-i18next";
 import { useToast } from "../containers/Notifications/Notifications";
@@ -27,6 +28,7 @@ const useGlobalState = () => {
     setShowNotification: (val) => dispatch(setShowNotification(val)),
     setNotificationMessage: (val) => dispatch(setNotificationMessage(val)),
     setIsLoggedIn: (val) => dispatch(setIsLoggedIn(val)),
+    setOrderType: (val) => dispatch(setOrderType(val)),
   };
 
   return { ...state, ...setters, t, showMessage };

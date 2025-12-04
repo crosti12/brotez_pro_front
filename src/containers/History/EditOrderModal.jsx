@@ -9,8 +9,9 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { format } from "date-fns";
-import { addDots } from "../../utils/numberFormat";
+import { addDots, calculate } from "../../utils/numberFormat";
 import { useState } from "react";
+import ShareIcon from "@mui/icons-material/Share";
 
 const EditOrderModal = ({
   visible = false,
@@ -23,7 +24,7 @@ const EditOrderModal = ({
   paymentInf = {},
   setPaymentInf = () => {},
 }) => {
-  const { user, productsWithDeleted } = useGlobalState();
+  const { user, productsWithDeleted, setOrderType, setNewOrder, setView, showMessage } = useGlobalState();
   const [loading, setIsloading] = useState(false);
   const onClose = () => {
     setData(null);
@@ -47,7 +48,62 @@ const EditOrderModal = ({
     }
     setIsloading(false);
   };
+  const onSaveOrderModal = async () => {
+    setIsloading(true);
+    let resp = true;
+    if (!data.isPaid) {
+      resp = await onSave();
+    }
+    setIsloading(false);
+    resp && onClose();
+  };
+  const onEditOrder = () => {
+    const orderFormat = {
+      paymentType: data.paymentType,
+      clientName: data.clientName,
+      clientPhone: data.clientPhone,
+      isPaid: data.isPaid,
+      paymentId: data.paymentId || "",
+      _id: data._id,
+      products: data.products.map((pro) => {
+        const productObject = productsWithDeleted.find((prod) => prod._id === pro.productId) || {};
+        const test = {
+          unit: productObject?.unit,
+          quantity: pro.quantity,
+          name: productObject?.name,
+          product: { ...productObject, label: productObject?.name },
+        };
+        return test;
+      }),
+    };
+    setNewOrder(orderFormat);
+    setView("addOrder");
+    setOrderType("edit");
+  };
+  const handleCopy = async () => {
+    try {
+      const productLines = data.products.map((orderedProduct) => {
+        const product = productsWithDeleted.find((p) => p._id === orderedProduct.productId);
+        if (!product) return ``;
 
+        const line = `${product.name} - ${orderedProduct.quantity}${product.unit} -> ${addDots(
+          calculate("multiply", orderedProduct.pricedAt, orderedProduct.quantity)
+        )}Bs`;
+        return line;
+      });
+
+      const header = `Fecha: ${dateFormat(data.createdAt)}`;
+
+      const total = `Total: ${addDots(data.total)} Bs`;
+
+      const text = `${header}\nProductos:\n\n${productLines.join("\n\n")}\n\n${total}\n`;
+
+      await navigator.clipboard.writeText(text);
+      showMessage(t("orderCopied"), "success");
+    } catch (err) {
+      console.error("Failed to copy: ", err);
+    }
+  };
   function ProductTable() {
     const tableData =
       data?.products?.map((orderedProduct) => {
@@ -58,7 +114,7 @@ const EditOrderModal = ({
           return {
             id: ordProId,
             name: "not-found",
-            pricedAt: "0",
+            price: "0",
             quantity: "0",
           };
         }
@@ -66,31 +122,21 @@ const EditOrderModal = ({
         return {
           id: ordProId,
           name: product.name + (product?.isDeleted ? " (D)" : ""),
-          pricedAt: orderedProduct.pricedAt,
-          quantity: `${orderedProduct.quantity} ${product.unit}`,
+          price: calculate("multiply", orderedProduct.pricedAt, orderedProduct.quantity),
+          quantity: `${orderedProduct.quantity}${product.unit} x ${orderedProduct.pricedAt}Bs/${product.unit}`,
         };
       }) ?? [];
 
-    const formatAddDecimals = (rowData) => addDots(rowData?.pricedAt || 0) + "/Bs";
+    const formatAddDecimals = (rowData) => addDots(rowData?.price || 0) + "Bs";
 
     return (
       <DataTable className="edit-order-data-table" showGridlines value={tableData}>
         <Column field="name" header={t("name")} />
         <Column field="quantity" header={t("quantity")} />
-        <Column field="pricedAt" body={formatAddDecimals} header={t("pricedAt")} />
+        <Column field="price" body={formatAddDecimals} header={t("price")} />
       </DataTable>
     );
   }
-  const onSaveOrderModal = () => {
-    setIsloading(true);
-    let resp = true;
-    if (!data.isPaid) {
-      resp = onSave();
-    }
-    setIsloading(false);
-    resp && onClose();
-  };
-
   return (
     <Dialog
       PaperProps={{
@@ -107,12 +153,17 @@ const EditOrderModal = ({
     >
       <div className="edit-order-modal">
         <div className="edit-order-modal-header">
+          <ShareIcon onClick={handleCopy} sx={{ height: "30px", width: "30px" }} />
           <p className="edit-order-modal-title">{data.isPaid ? t("viewOrder") : t("editOrder")}</p>
           <CancelIcon onClick={onClose} sx={{ height: "30px", width: "30px" }} />
         </div>
         <div className="product-list-container">{ProductTable({ data, productsWithDeleted, t })}</div>
         <div className="user-and-payment-info">
           <div className="product-info">
+            <span className="product-info-total">
+              <h1>{t("total")}:</h1>
+              <p>{addDots(data?.total || 0)}/Bs</p>
+            </span>
             <span>
               <h1>{t("author")}:</h1>
               <p>{data?.author?.username}</p>
@@ -120,10 +171,6 @@ const EditOrderModal = ({
             <span>
               <h1>{t("createdAt")}:</h1>
               <p>{data?.createdAt && dateFormat(data?.createdAt)}</p>
-            </span>
-            <span>
-              <h1>{t("total")}:</h1>
-              <p>{addDots(data?.total || 0)}/Bs</p>
             </span>
             <span>
               <h1>{t("isDelivered")}:</h1>
@@ -199,6 +246,16 @@ const EditOrderModal = ({
               </Button>
             )}
 
+            <Button
+              size="small"
+              color="warning"
+              loading={loading}
+              disabled={loading}
+              variant="contained"
+              onClick={onEditOrder}
+            >
+              {t("edit")}
+            </Button>
             <Button size="small" loading={loading} disabled={loading} variant="contained" onClick={onSaveOrderModal}>
               {t("save")}
             </Button>

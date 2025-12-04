@@ -8,7 +8,7 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AddCircle from "@mui/icons-material/AddCircle";
 import AddProductModal from "./AddOrderedProductModal";
-import { addDots, formatDigits, sumCommaStrings } from "../../utils/numberFormat";
+import { addDots, calculate, formatDigits, sumCommaStrings } from "../../utils/numberFormat";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import "./Order.css";
@@ -20,8 +20,17 @@ import { PAYMENT_TYPES } from "../../constants";
 const Order = () => {
   const { t } = useTranslation();
   const [openAddModal, setOpenAddModal] = useState(false);
-  const { createOrder } = useAPI();
-  const { user, setNewOrder: setOrder, newOrder: order, showMessage, products } = useGlobalState();
+  const { createOrder, updateOrder } = useAPI();
+  const {
+    user,
+    setNewOrder: setOrder,
+    newOrder: order,
+    showMessage,
+    products,
+    orderType,
+    setOrderType,
+  } = useGlobalState();
+
   const totalPrice = useRef(null);
   const [loading, setIsloading] = useState(false);
 
@@ -74,6 +83,7 @@ const Order = () => {
   };
   const onClear = () => {
     setOrder({ paymentType: PAYMENT_TYPES[0], clientName: "", clientPhone: "", isPaid: true });
+    setOrderType("new");
   };
   const onSave = async () => {
     setIsloading(true);
@@ -81,14 +91,17 @@ const Order = () => {
     const body = {
       ...order,
       products: localProducts
-        .map(
-          (pro) =>
+        .map((pro) => {
+          const updatedProduct = products.find((product) => product._id === pro?.product?._id);
+          return (
             pro.quantity && {
               productId: pro.product._id,
               quantity: pro.quantity,
-              pricedAt: products.find((product) => product._id === pro?.product?._id)?.price,
+              pricedAt: updatedProduct?.price,
+              costAt: updatedProduct?.cost,
             }
-        )
+          );
+        })
         .filter(Boolean),
       author: user.id,
       total,
@@ -99,12 +112,11 @@ const Order = () => {
     } else {
       delete body.paymentId;
     }
-
+    delete body._id;
     let message = "";
     if (!body?.products?.length > 0) message = t("errorMsgs.productsMissing");
     else if (body.isPaid && body.paymentType === "pagoMovil" && !body.paymentId)
       message = t("errorMsgs.referenceFieldMissing");
-    else if (!body.isPaid && !body.clientPhone) message = t("errorMsgs.clientPhoneMissing");
     else if (!body.isPaid && !body.clientName) message = t("errorMsgs.clientNameMissing");
 
     if (message) {
@@ -112,7 +124,7 @@ const Order = () => {
       return showMessage(message, "warn");
     }
 
-    const resp = await createOrder(body);
+    const resp = orderType === "new" ? await createOrder(body) : await updateOrder(body, order._id);
     if (resp) {
       showMessage(t("successCreated"), "success");
       onClear();
@@ -125,14 +137,14 @@ const Order = () => {
       (acc, orderProduct, index) => {
         const stateProduct = products.find((pro) => pro._id === orderProduct.product._id);
         if (!stateProduct) return;
-        const sumResult = parseInt(stateProduct.price * parseFloat(orderProduct.quantity.replace(",", ".")));
+        const sumResult = calculate("multiply", stateProduct.price, orderProduct.quantity);
         const orderProductPrice = !Number.isNaN(sumResult) ? sumResult : 0;
 
         const itemUi = (
           <Accordion key={orderProduct.name}>
             <AccordionSummary expandIcon={<HighlightOffIcon onClick={(e) => onDeleteProduct(e, index)} />}>
               <div className="ordered-product-details">
-                <span>{orderProduct.name}: </span>
+                <span className="ordered-product-detail-name">{orderProduct.name}: </span>
                 <span className="flex">
                   <p>{orderProduct.quantity || 0}/</p>
                   <p>{t(orderProduct.unit)}</p>

@@ -19,8 +19,9 @@
 .edit-order-modal {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: 16px;
-  width: 80vw;
+  width: 90vw;
   padding: 8px 12px;
   background-color: white;
   border-radius: 8px;
@@ -43,7 +44,7 @@
   bottom: 5px;
 }
 .product-list-container {
-  height: 30vh;
+  height: 40vh;
   border-bottom: 1px solid rgba(172, 171, 171, 0.5);
   overflow: auto;
 }
@@ -92,4 +93,13 @@
   width: 100%;
   justify-content: space-between;
   margin-top: 22px;
+}
+.product-info-total {
+  justify-content: flex-end;
+}
+.ordered-product-detail-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
 }

@@ -9,13 +9,14 @@ function App() {
   const { isLoggedIn, user } = useGlobalState();
   const { getProducts, getOrders } = useAPI();
   const { i18n } = useTranslation();
+
   useEffect(() => {
     isLoggedIn &&
       (async () => {
         await getProducts();
         await getOrders();
       })();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     i18n.changeLanguage(user?.language || "es");

@@ -43,3 +43,25 @@ export function addDots(num) {
 
   return String(num ?? "");
 }
+export function calculate(operation, ...args) {
+  // Normalize strings: replace commas with dots and parse as float
+  const numbers = args.map((arg) => {
+    if (typeof arg === "string") {
+      return parseFloat(arg.replace(",", "."));
+    }
+    return parseFloat(arg);
+  });
+
+  switch (operation) {
+    case "add":
+      return numbers.reduce((acc, n) => acc + n, 0);
+    case "subtract":
+      return numbers.reduce((acc, n) => acc - n);
+    case "multiply":
+      return numbers.reduce((acc, n) => acc * n, 1);
+    case "divide":
+      return numbers.reduce((acc, n) => acc / n);
+    default:
+      throw new Error("Unsupported operation");
+  }
+}

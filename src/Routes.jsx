@@ -10,7 +10,7 @@ import "./layout.css";
 const Routes = () => {
   const { view } = useGlobalState();
   const routes = {
-    // dashboard: <Dashboard />,
+    dashboard: <Dashboard />,
     addOrder: <Order />,
     history: <History />,
     // userManagement:

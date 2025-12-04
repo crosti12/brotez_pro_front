@@ -21,6 +21,7 @@ const initialState = {
     paymentType: PAYMENT_TYPES[0],
     isPaid: true,
   },
+  orderType: "new",
   productsWithDeleted: [],
   showNotification: false,
   notificationMessage: "",
@@ -60,6 +61,9 @@ const globalSlice = createSlice({
     setProductsWithDeleted: (state, action) => {
       state.productsWithDeleted = action.payload;
     },
+    setOrderType: (state, action) => {
+      state.orderType = action.payload;
+    },
   },
 });
 
@@ -73,6 +77,7 @@ export const {
   setNewOrder,
   setShowNotification,
   setNotificationMessage,
+  setOrderType,
 } = globalSlice.actions;
 
 export default globalSlice.reducer;

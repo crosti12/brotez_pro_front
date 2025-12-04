@@ -46,6 +46,8 @@
   "language": "Idioma",
   "reset": "Restablecer",
   "save": "Guardar",
+  "orderCopied": "Pedido copiado exitosamente!",
+  "cash": "Efectivo",
   "errorMsgs": {
     "productsMissing": "Por favor agregue al menos un producto",
     "referenceFieldMissing": "Falta el campo de referencia",
