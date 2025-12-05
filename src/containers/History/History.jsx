@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import useGlobalState from "../../actions/useGlobalState";
@@ -11,7 +11,7 @@ import "./History.css";
 import ArrowBackIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForwardIos";
 import Button from "@mui/material/Button";
-
+import { Badge } from "primereact/badge";
 const History = () => {
   const { updateOrder, deleteOrder } = useAPI();
   const [openEditOrderModal, setOpenEditOrderModal] = useState("");
@@ -20,18 +20,31 @@ const History = () => {
   const { t, orders, showMessage } = useGlobalState();
   const [globalFilter, setGlobalFilter] = useState("");
 
+  const sortedRows = useMemo(
+    () =>
+      [...orders]
+        .map((order) => ({ ...order }))
+        .sort((a, b) => {
+          if (a.isPaid !== b.isPaid) {
+            return a.isPaid ? 1 : -1;
+          }
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        }),
+    [orders]
+  );
+
   const onPayingDetailsSubmit = async () => {
     if (!paymentInf.paymentType || (paymentInf.paymentType === "pagoMovil" && !paymentInf.paymentId)) {
       showMessage(t("errorMsgs.referenceFieldMissing"), "warn");
       return false;
     }
-    const resp = await updateOrder({ ...paymentInf, isPaid: true }, orders[dataidx]._id);
+    const resp = await updateOrder({ ...paymentInf, isPaid: true }, sortedRows[dataidx]._id);
     if (resp) showMessage(t("paymentRegistered"), "success");
     return resp;
   };
 
   const onDelete = async () => {
-    const resp = await deleteOrder(orders[dataidx]._id);
+    const resp = await deleteOrder(sortedRows[dataidx]._id);
     if (resp) showMessage(t("orderDeleted"), "success");
     else showMessage(t("orderNotDeleted"), "warn");
     return resp;
@@ -52,16 +65,19 @@ const History = () => {
   const dateFormat = (rowData) => {
     const date = new Date(rowData.createdAt);
 
-    return format(date, "yyyy-MM-dd HH:mm a");
+    return format(date, "MM-dd");
   };
+
   const onRowclik = (rowData) => {
     setDataIdx(rowData.index);
     setOpenEditOrderModal(true);
   };
 
   const statusTemplate = (rowData) => (
-    <span style={{ color: rowData.isPaid ? "green" : "#a3a107" }}>{rowData.isPaid ? t("paid") : t("pending")}</span>
+    <Badge severity={rowData.isPaid ? "success" : "warning"} style={{ width: "15px", height: "15px" }} />
   );
+  const totalTemplate = (rowData) => <div className="history-total-ellipsis">{rowData.total}</div>;
+  const clientTemplate = (rowData) => <div className="history-total-ellipsis">{rowData.clientName || "-"}</div>;
 
   return (
     <div className="history-main">
@@ -70,7 +86,7 @@ const History = () => {
         header={header}
         onRowClick={onRowclik}
         showGridlines={true}
-        value={orders}
+        value={sortedRows}
         globalFilter={globalFilter}
         paginator
         rows={8}
@@ -90,18 +106,14 @@ const History = () => {
         currentPageReportTemplate="{first} to {last} of {totalRecords}"
       >
         <Column field="createdAt" dataType="date" body={dateFormat} header={t("date")} />
-        <Column field="author.username" header={t("author")} />
-        <Column
-          field="total"
-          body={(rowData) => <div className="history-total-ellipsis">{rowData.total}</div>}
-          header={t("total")}
-        />
+        <Column field="clientName" body={clientTemplate} header={t("client")} />
+        <Column field="total" body={totalTemplate} header={t("total")} />
         <Column field="isPaid" body={statusTemplate} header={t("status")} />
       </DataTable>
 
       <EditOrderModal
         visible={openEditOrderModal}
-        data={orders[dataidx]}
+        data={sortedRows[dataidx]}
         setData={setDataIdx}
         paymentInf={paymentInf}
         setPaymentInf={setPaymentInf}

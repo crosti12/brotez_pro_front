@@ -127,7 +127,7 @@ const Order = () => {
 
     const resp = orderType === "new" ? await createOrder(body) : await updateOrder(body, order._id);
     if (resp) {
-      showMessage(t("successCreated"), "success");
+      orderType === "new" ? showMessage(t("successCreated"), "success") : showMessage(t("successUpdated"), "success");
       onClear();
     }
     setIsloading(false);

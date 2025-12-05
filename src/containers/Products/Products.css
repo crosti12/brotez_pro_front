@@ -4,6 +4,10 @@
   border-radius: 8px;
   height: 100%;
 }
+.product-table,
+.product-datatable .p-datatable-wrapper {
+  height: calc(100% - 60px);
+}
 .product-datatable .p-datatable-header button {
   height: 35px;
 }
@@ -76,4 +80,10 @@
 }
 .add-product-modal-actions button {
   font-size: 12px;
+}
+.products-total-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80px;
 }

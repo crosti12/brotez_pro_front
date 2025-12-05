@@ -48,6 +48,8 @@
   "save": "Save",
   "orderCopied": "Order copied successfully!!",
   "cash": "Cash",
+  "client": "Client",
+  "successUpdated": "Updated Successfully!!",
   "errorMsgs": {
     "productsMissing": "Please add at least one product",
     "referenceFieldMissing": "The reference field is missing",

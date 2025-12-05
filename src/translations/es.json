@@ -48,6 +48,8 @@
   "save": "Guardar",
   "orderCopied": "Pedido copiado exitosamente!",
   "cash": "Efectivo",
+  "client": "Cliente",
+  "successUpdated": "¡Actualizado exitosamente!",
   "errorMsgs": {
     "productsMissing": "Por favor agregue al menos un producto",
     "referenceFieldMissing": "Falta el campo de referencia",

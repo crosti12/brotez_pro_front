@@ -56,10 +56,13 @@ const Products = () => {
     </div>
   );
 
+  const nameTemplate = (rowData) => <div className="products-total-ellipsis">{rowData.name}</div>;
+
   return (
     <div className="product-datatable">
       {products?.length > 0 ? (
         <DataTable
+          className="product-table"
           paginator
           rows={8}
           paginatorTemplate={{
@@ -82,7 +85,7 @@ const Products = () => {
           onRowClick={onRowClick}
           showGridlines
         >
-          <Column field="name" header={t("name")} />
+          <Column field="name" body={nameTemplate} header={t("name")} />
           <Column field="productType" header={t("productType")} />
           <Column field="price" header={t("price")} />
           {user?.permissions?.manageCost && <Column field="cost" header={t("cost")} />}
