@@ -12,6 +12,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForwardIos";
 import Button from "@mui/material/Button";
 import { Badge } from "primereact/badge";
+
 const History = () => {
   const { updateOrder, deleteOrder } = useAPI();
   const [openEditOrderModal, setOpenEditOrderModal] = useState("");
@@ -69,7 +70,8 @@ const History = () => {
   };
 
   const onRowclik = (rowData) => {
-    setDataIdx(rowData.index);
+    const elementIndex = sortedRows.findIndex((el) => el._id === rowData.data._id);
+    setDataIdx(elementIndex);
     setOpenEditOrderModal(true);
   };
 

@@ -228,26 +228,25 @@ const Order = () => {
           </div>
         </div>
         <div className="order-payment-data">
-          {!order.isPaid ? (
-            <>
-              <TextField
-                size="small"
-                value={order.clientName}
-                onChange={(e) => onInputChange("clientName", e.target.value)}
-                label={t("clientName")}
-                className="client-name"
-              />
-              <TextField
-                size="small"
-                value={order.clientPhone}
-                type="number"
-                onChange={(e) => onInputChange("clientPhone", e.target.value)}
-                label={t("clientPhone")}
-                id="clientphone"
-                key={order.isPaid ? "newKEt" : "newOrkey"}
-              />
-            </>
-          ) : (
+          <>
+            <TextField
+              size="small"
+              value={order.clientName}
+              onChange={(e) => onInputChange("clientName", e.target.value)}
+              label={t("clientName")}
+              className="client-name"
+            />
+            <TextField
+              size="small"
+              value={order.clientPhone}
+              type="number"
+              onChange={(e) => onInputChange("clientPhone", e.target.value)}
+              label={t("clientPhone")}
+              id="clientphone"
+              key={order.isPaid ? "newKEt" : "newOrkey"}
+            />
+          </>
+          {order.isPaid && (
             <>
               <Select
                 size="small"
