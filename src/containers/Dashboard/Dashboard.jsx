@@ -122,7 +122,13 @@ const Dashboard = () => {
             <Column field="product" header={t("product")} />
             <Column
               field="quantity"
-              body={(rowData) => addDots(rowData.quantity) + " " + rowData.unit}
+              body={(rowData) => {
+                return (
+                  (typeof rowData.quantity === "string" ? rowData.quantity : addDots(rowData.quantity)) +
+                  " " +
+                  rowData.unit
+                );
+              }}
               header={t("quantity")}
             />
             <Column field="profit" body={(rowData) => addDots(rowData.profit)} header={t("profit")} />
