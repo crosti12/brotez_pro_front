@@ -19,8 +19,9 @@ const SettingModal = ({ visible = false, setVisible = () => {} }) => {
   const [state, setState] = useState(user);
 
   const clearAllLocalStorage = () => {
-    localStorage.clear();
     setIsLoggedIn(false);
+    localStorage.clear();
+    location.reload();
   };
 
   const onSaveSettings = async () => {

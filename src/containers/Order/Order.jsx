@@ -107,12 +107,7 @@ const Order = () => {
       author: user.id,
       total,
     };
-    if (body.isPaid) {
-      delete body.clientPhone;
-      delete body.clientName;
-    } else {
-      delete body.paymentId;
-    }
+
     delete body._id;
     let message = "";
     if (!body?.products?.length > 0) message = t("errorMsgs.productsMissing");
