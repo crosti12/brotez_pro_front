@@ -37,7 +37,7 @@ const EditOrderModal = ({
   const dateFormat = (date) => {
     const dateObj = new Date(date);
 
-    return format(dateObj, "yyyy-MM-dd HH:mm a");
+    return format(dateObj, "yyyy-MM-dd hh:mm a");
   };
 
   const onDeleteOrder = async () => {
@@ -86,17 +86,18 @@ const EditOrderModal = ({
         const product = productsWithDeleted.find((p) => p._id === orderedProduct.productId);
         if (!product) return ``;
 
-        const line = `${product.name} - ${orderedProduct.quantity}${product.unit} -> ${addDots(
+        const line = `* ${product.name} - ${orderedProduct.quantity}${product.unit} -> ${addDots(
           calculate("multiply", orderedProduct.pricedAt, orderedProduct.quantity)
         )}Bs`;
         return line;
       });
+      const clientInfo = `🛒 Gracias por tu compra en Brotez Aquí están los detalles de tu pedido:`;
 
       const header = `Fecha: ${dateFormat(data.createdAt)}`;
 
       const total = `Total: ${addDots(data.total)} Bs`;
 
-      const text = `${header}\nProductos:\n\n${productLines.join("\n\n")}\n\n${total}\n`;
+      const text = `${clientInfo}\n${header}\n\nProductos:\n${productLines.join("\n")}\n\n${total}\n`;
 
       await navigator.clipboard.writeText(text);
       showMessage(t("orderCopied"), "success");
