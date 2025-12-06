@@ -44,12 +44,16 @@ export function addDots(num) {
   return String(num ?? "");
 }
 export function calculate(operation, ...args) {
-  // Normalize strings: replace commas with dots and parse as float
   const numbers = args.map((arg) => {
-    if (typeof arg === "string") {
-      return parseFloat(arg.replace(",", "."));
+    try {
+      if (typeof arg === "string") {
+        return parseFloat(arg.replace(",", "."));
+      }
+      return parseFloat(arg);
+    } catch (error) {
+      console.error("error converting values in calculate:", error);
+      return 0;
     }
-    return parseFloat(arg);
   });
 
   switch (operation) {
@@ -62,6 +66,7 @@ export function calculate(operation, ...args) {
     case "divide":
       return numbers.reduce((acc, n) => acc / n);
     default:
-      throw new Error("Unsupported operation");
+      console.error("Unsupported operation");
+      return 0;
   }
 }

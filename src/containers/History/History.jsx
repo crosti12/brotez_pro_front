@@ -89,7 +89,7 @@ const History = () => {
         value={sortedRows}
         globalFilter={globalFilter}
         paginator
-        rows={8}
+        rows={11}
         paginatorTemplate={{
           layout: "PrevPageLink CurrentPageReport NextPageLink",
           PrevPageLink: (options) => (

@@ -62,3 +62,12 @@ html {
 .margin-top-auto {
   margin-top: auto;
 }
+.font-accent {
+  color: rgb(59, 167, 77);
+  font-weight: bold;
+}
+
+.font-accent-n {
+  color: red;
+  font-weight: bold;
+}

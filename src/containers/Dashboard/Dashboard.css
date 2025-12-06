@@ -1,0 +1,38 @@
+.dashboard {
+  height: 100%;
+}
+.dashboard-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  background-color: white;
+  border-radius: 8px;
+  height: 100%;
+}
+.dashboard-sells-info {
+  display: flex;
+  gap: 4px;
+  justify-content: space-between;
+  overflow-x: auto;
+}
+.sell-count-group {
+  display: flex;
+}
+.data-card-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid rgba(163, 158, 158, 0.411);
+  border-radius: 16px;
+  min-width: 120px;
+}
+.custom-date input {
+  padding-left: 10px;
+}
+.best-sold-products-data-table tr > * {
+  padding: 8px;
+  font-size: 12px;
+}

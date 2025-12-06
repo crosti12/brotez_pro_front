@@ -64,7 +64,7 @@ const Products = () => {
         <DataTable
           className="product-table"
           paginator
-          rows={8}
+          rows={10}
           paginatorTemplate={{
             layout: "PrevPageLink CurrentPageReport NextPageLink",
             PrevPageLink: (options) => (
@@ -86,7 +86,7 @@ const Products = () => {
           showGridlines
         >
           <Column field="name" body={nameTemplate} header={t("name")} />
-          <Column field="productType" header={t("productType")} />
+          {/* <Column field="productType" header={t("productType")} /> */}
           <Column field="price" header={t("price")} />
           {user?.permissions?.manageCost && <Column field="cost" header={t("cost")} />}
         </DataTable>

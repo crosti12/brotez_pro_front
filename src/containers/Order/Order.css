@@ -118,7 +118,7 @@
 }
 .total-order-price {
   position: sticky;
-  bottom: 1px;
+  bottom: -5px;
   background-color: white;
   padding: 8px;
   border-radius: 8px;
