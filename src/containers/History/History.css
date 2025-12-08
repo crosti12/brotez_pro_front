@@ -16,6 +16,10 @@
   font-size: 12px;
 }
 .order-data-table tr > td {
+  padding: 0px 8px;
+  font-size: 12px;
+}
+.order-data-table tr > td {
   height: 40px;
 }
 
@@ -98,7 +102,7 @@
   margin-top: 22px;
 }
 .product-info-total {
-  justify-content: flex-end;
+  justify-content: space-between;
 }
 .ordered-product-detail-name {
   white-space: nowrap;
@@ -107,8 +111,39 @@
   max-width: 140px;
 }
 .history-total-ellipsis {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+.history-total-ellipsis > div {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 50px;
+  max-width: 60px;
+  font-size: 11px;
+}
+.history-total-ellipsis > div:first-child {
+  font-weight: bold;
+}
+.history-client-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 55px;
+}
+.status-and-date {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 50px;
+}
+.status-and-date .date-format {
+  font-size: 10px;
+  text-wrap: nowrap;
+}
+.edit-order-total-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }

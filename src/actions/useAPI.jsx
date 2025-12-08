@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
 import useReq from "../components/useReq";
-import { setOrders, setProducts, setProductsWithDeleted, setUser } from "./stateSlice";
+import { setDolarValue, setOrders, setProducts, setProductsWithDeleted, setUser } from "./stateSlice";
+import axios from "axios";
 
 const useAPI = () => {
   const dispatch = useDispatch();
@@ -128,9 +129,20 @@ const useAPI = () => {
       console.error(error);
     }
   };
-
+  const getDollar = async () => {
+    try {
+      const resp = await axios({
+        url: "https://api.dolarvzla.com/public/exchange-rate",
+        method: "GET",
+      });
+      dispatch(setDolarValue(resp.data.current.usd));
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return {
     getProducts,
+    getDollar,
     updateUser,
     onLogin,
     onCreateProduct,

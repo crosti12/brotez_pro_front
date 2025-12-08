@@ -24,7 +24,8 @@ const EditOrderModal = ({
   paymentInf = {},
   setPaymentInf = () => {},
 }) => {
-  const { user, productsWithDeleted, setOrderType, setNewOrder, setView, showMessage } = useGlobalState();
+  const { user, productsWithDeleted, setOrderType, setNewOrder, setView, showMessage, getConvertion } =
+    useGlobalState();
   const [loading, setIsloading] = useState(false);
   const onClose = () => {
     setData(null);
@@ -57,6 +58,7 @@ const EditOrderModal = ({
     setIsloading(false);
     resp && onClose();
   };
+
   const onEditOrder = () => {
     const orderFormat = {
       paymentType: data.paymentType,
@@ -80,31 +82,49 @@ const EditOrderModal = ({
     setView("addOrder");
     setOrderType("edit");
   };
+
   const handleCopy = async () => {
     try {
       const productLines = data.products.map((orderedProduct) => {
         const product = productsWithDeleted.find((p) => p._id === orderedProduct.productId);
         if (!product) return ``;
 
-        const line = `* ${product.name} - ${orderedProduct.quantity}${product.unit} -> ${addDots(
-          calculate("multiply", orderedProduct.pricedAt, orderedProduct.quantity)
-        )}Bs`;
-        return line;
+        const isCurrDollar = orderedProduct.currencyAt === "usd";
+        const pricedAtPro = orderedProduct.pricedAt;
+        const pricedAtBs = isCurrDollar ? getConvertion(pricedAtPro, "toBs") : pricedAtPro;
+        const pricedAtDollar = isCurrDollar ? pricedAtPro : getConvertion(pricedAtPro, "toDollar");
+
+        const lineTotalBs = calculate("multiply", pricedAtBs, orderedProduct.quantity);
+        const lineTotalDollar = calculate("multiply", pricedAtDollar, orderedProduct.quantity);
+
+        return `* ${product.name} - ${orderedProduct.quantity}${product.unit} -> ${addDots(lineTotalBs)} Bs / ${addDots(
+          lineTotalDollar
+        )} $`;
       });
-      const clientInfo = `🛒 Gracias por tu compra en Brotez Aquí están los detalles de tu pedido:`;
 
+      const clientInfo = `🛒 Gracias por tu compra en Brotez. Aquí están los detalles de tu pedido:`;
       const header = `Fecha: ${dateFormat(data.createdAt)}`;
+      const clientName = data?.clientName ? `Cliente: ${data.clientName}` : "";
+      const clientPhone = data?.clientPhone ? `Teléfono: ${data.clientPhone}` : "";
 
-      const total = `Total: ${addDots(data.total)} Bs`;
+      const isDollar = data?.currency === "usd";
+      const totalBs = isDollar ? getConvertion(data.total, "toBs") : data.total;
+      const totalDollar = isDollar ? data.total : getConvertion(data.total, "toDollar");
 
-      const text = `${clientInfo}\n${header}\n\nProductos:\n${productLines.join("\n")}\n\n${total}\n`;
+      const total = `Total: ${addDots(totalBs)} Bs \n$ref: ${addDots(totalDollar)}$`;
+
+      const text = `${clientInfo}\n${header}\n${clientName}\n${clientPhone}\n\nProductos:\n${productLines.join(
+        "\n"
+      )}\n\n${total}`;
 
       await navigator.clipboard.writeText(text);
       showMessage(t("orderCopied"), "success");
     } catch (err) {
       console.error("Failed to copy: ", err);
+      showMessage(t("copyFailed"), "error");
     }
   };
+
   function ProductTable() {
     const tableData =
       data?.products?.map((orderedProduct) => {
@@ -120,15 +140,25 @@ const EditOrderModal = ({
           };
         }
 
+        const isCurrDollar = orderedProduct.currencyAt === "usd";
+        const pricedAtPro = orderedProduct.pricedAt;
+        const pricedAt = isCurrDollar ? getConvertion(pricedAtPro, "toBs") : pricedAtPro;
+        const producctDollarPrice = isCurrDollar ? pricedAtPro : getConvertion(pricedAtPro, "toDollar");
+
+        const quantityFormat = `${orderedProduct.quantity}${product.unit} x ${producctDollarPrice}$/${product.unit}`;
+
         return {
           id: ordProId,
           name: product.name + (product?.isDeleted ? " (D)" : ""),
-          price: calculate("multiply", orderedProduct.pricedAt, orderedProduct.quantity),
-          quantity: `${orderedProduct.quantity}${product.unit} x ${orderedProduct.pricedAt}Bs/${product.unit}`,
+          price: calculate("multiply", pricedAt, orderedProduct.quantity),
+          quantity: quantityFormat,
         };
       }) ?? [];
 
-    const formatAddDecimals = (rowData) => addDots(rowData?.price || 0) + "Bs";
+    const formatAddDecimals = (rowData) => {
+      const value = rowData.price;
+      return addDots(value) + "/Bs";
+    };
 
     return (
       <DataTable className="edit-order-data-table" showGridlines value={tableData}>
@@ -138,6 +168,20 @@ const EditOrderModal = ({
       </DataTable>
     );
   }
+  const getTotalLabels = () => {
+    const total = data?.total;
+    const isDollar = data?.currency === "usd";
+    const totalBs = isDollar ? getConvertion(total, "toBs") : total;
+    const totalDollar = isDollar ? total : getConvertion(total, "toDollar");
+
+    return (
+      <>
+        <p>{addDots(totalDollar || 0)}/$</p>
+        <p>{addDots(totalBs)}/Bs</p>
+      </>
+    );
+  };
+
   return (
     <Dialog
       PaperProps={{
@@ -163,7 +207,7 @@ const EditOrderModal = ({
           <div className="product-info">
             <span className="product-info-total">
               <h1>{t("total")}:</h1>
-              <p>{addDots(data?.total || 0)}/Bs</p>
+              {getTotalLabels()}
             </span>
             <span>
               <h1>{t("author")}:</h1>

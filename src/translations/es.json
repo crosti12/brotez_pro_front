@@ -58,6 +58,9 @@
   "month": "Mes",
   "year": "Año",
   "product": "Producto",
+  "usd": "USD$",
+  "bs": "Bs",
+  "vegetable": "Vegetal",
   "errorMsgs": {
     "productsMissing": "Por favor agregue al menos un producto",
     "referenceFieldMissing": "Falta el campo de referencia",

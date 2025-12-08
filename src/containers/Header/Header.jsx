@@ -8,7 +8,7 @@ import { useState } from "react";
 import SettingModal from "./SettingModal";
 
 const Header = () => {
-  const { user } = useGlobalState();
+  const { user, dolarValue } = useGlobalState();
   const [openSettings, setOpenSettings] = useState(false);
   const onOpenSettings = () => setOpenSettings(true);
 
@@ -21,6 +21,7 @@ const Header = () => {
         <p className="header-font">{user.username}</p>
         <p className="body-font">{user.role}</p>
       </div>
+      <span className="dollar-info">{dolarValue.toFixed(2)} $</span>
       <Button onClick={onOpenSettings} className="open-settings-btn">
         <SettingsIcon className="setting-icon" />
       </Button>

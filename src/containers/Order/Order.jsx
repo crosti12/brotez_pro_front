@@ -30,6 +30,7 @@ const Order = () => {
     orderType,
     setOrderType,
     productsWithDeleted,
+    getConvertion,
   } = useGlobalState();
 
   const totalPrice = useRef(null);
@@ -88,7 +89,7 @@ const Order = () => {
   };
   const onSave = async () => {
     setIsloading(true);
-    const total = totalPrice.current.id;
+    const total = getConvertion(totalPrice.current.id, "toDollar");
     const body = {
       ...order,
       products: localProducts
@@ -100,12 +101,14 @@ const Order = () => {
               quantity: pro.quantity,
               pricedAt: updatedProduct?.price,
               costAt: updatedProduct?.cost,
+              currencyAt: updatedProduct?.currency,
             }
           );
         })
         .filter(Boolean),
       author: user.id,
-      total,
+      total: total,
+      currency: "usd",
     };
 
     delete body._id;
@@ -133,7 +136,10 @@ const Order = () => {
       (acc, orderProduct, index) => {
         const stateProduct = productsWithDeleted.find((pro) => pro._id === orderProduct.product._id);
         if (!stateProduct) return acc;
-        const sumResult = calculate("multiply", stateProduct.price, orderProduct.quantity);
+        const isCurrencyDollar = stateProduct.currency === "usd";
+        const price = isCurrencyDollar ? getConvertion(stateProduct.price) : stateProduct.price;
+
+        const sumResult = calculate("multiply", price, orderProduct.quantity);
         const orderProductPrice = !Number.isNaN(sumResult) ? sumResult : 0;
 
         const itemUi = (
@@ -145,7 +151,12 @@ const Order = () => {
                   <p>{orderProduct.quantity || 0}/</p>
                   <p>{t(orderProduct.unit)}</p>
                 </span>
-                <span>{addDots(orderProductPrice)}/Bs</span>
+                <div className="flex-col">
+                  <span>{addDots(orderProductPrice, 2)}/Bs</span>
+                  <span className="order-product-dolar-price">
+                    {getConvertion(orderProductPrice, isCurrencyDollar ? "toDollar" : "")}/$
+                  </span>
+                </div>
               </div>
             </AccordionSummary>
 
@@ -170,7 +181,7 @@ const Order = () => {
                   />
                 )}
                 <p>
-                  {t("price")}: {stateProduct?.price}/Bs x {t(stateProduct.unit)}
+                  {t("price")}: {stateProduct?.price}/{t(stateProduct.currency)} x {t(stateProduct.unit)}
                 </p>
               </div>
             </AccordionDetails>
@@ -187,7 +198,11 @@ const Order = () => {
       <>
         {result.productsUi}
         <span className="total-order-price" ref={totalPrice} id={result.total}>
-          Total: <span className="total-order-price-amount">{addDots(result.total)}</span> Bs
+          <div>
+            <span className="total-order-price-amount"> Total: {addDots(result.total)}</span> Bs
+            <br />
+            <span>{getConvertion(result.total, "toDollar")}</span> $
+          </div>
         </span>
       </>
     );
@@ -257,6 +272,7 @@ const Order = () => {
                 <TextField
                   size="small"
                   id="reference"
+                  type="number"
                   onChange={(e) => onInputChange("paymentId", e.target.value)}
                   label={t("reference")}
                   value={order?.paymentId || ""}

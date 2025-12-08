@@ -13,12 +13,13 @@ const initialState = {
   name: "",
   price: "",
   unit: "kg",
+  currency: "usd",
   productType: "vegetable",
 };
 
 const Products = () => {
   const [data, setData] = useState(initialState);
-  const { t, products, user } = useGlobalState();
+  const { t, products, user, getConvertion } = useGlobalState();
   const [openAddProductModal, setOpenAddProductModal] = useState(false);
   const [modalMode, setModalMode] = useState("");
 
@@ -58,6 +59,12 @@ const Products = () => {
 
   const nameTemplate = (rowData) => <div className="products-total-ellipsis">{rowData.name}</div>;
 
+  const convertionTemplate = (rowData) => (
+    <div className="products-total-ellipsis">
+      {rowData?.currency === "usd" ? getConvertion(rowData?.price || 0) : 0}
+    </div>
+  );
+
   return (
     <div className="product-datatable">
       {products?.length > 0 ? (
@@ -86,8 +93,8 @@ const Products = () => {
           showGridlines
         >
           <Column field="name" body={nameTemplate} header={t("name")} />
-          {/* <Column field="productType" header={t("productType")} /> */}
           <Column field="price" header={t("price")} />
+          <Column field="convertion" body={convertionTemplate} header={t("convertion")} />
           {user?.permissions?.manageCost && <Column field="cost" header={t("cost")} />}
         </DataTable>
       ) : (

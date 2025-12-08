@@ -56,11 +56,7 @@ const AddProductModal = ({ visible = false, setVisible = () => {}, mode = "", da
     <Dialog
       PaperProps={{
         sx: {
-          margin: 0,
-          position: "absolute",
-          top: 0,
-          left: "50%",
-          transform: "translateX(-50%)",
+          transform: "translateY(-10%)",
         },
       }}
       open={visible}
@@ -80,6 +76,10 @@ const AddProductModal = ({ visible = false, setVisible = () => {}, mode = "", da
           value={data.price}
           onChange={(e) => setData({ ...data, price: e.target.value })}
         />
+        <Select value={data.currency} onChange={(e) => setData({ ...data, currency: e.target.value })} displayEmpty>
+          <MenuItem value={"usd"}>{t("usd")}</MenuItem>
+          <MenuItem value={"bs"}>{t("bs")}</MenuItem>
+        </Select>
 
         <Select value={data.unit} onChange={(e) => setData({ ...data, unit: e.target.value })} displayEmpty>
           <MenuItem value={"kg"}>{t("kg")}</MenuItem>

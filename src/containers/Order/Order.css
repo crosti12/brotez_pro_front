@@ -30,7 +30,7 @@
   align-items: center;
   gap: 8px;
   width: 80vw;
-  height: 80vh;
+  height: 50vh;
   padding: 8px 12px;
   gap: 50px;
 }
@@ -163,4 +163,13 @@
 }
 .new-order__product-list .MuiButtonBase-root {
   padding: 0px 6px !important;
+}
+.ordered-product-details > span,
+.ordered-product-details > div {
+  font-size: 12px;
+}
+.order-product-dolar-price {
+  font-size: 10px;
+  font-weight: bold;
+  text-align: right;
 }

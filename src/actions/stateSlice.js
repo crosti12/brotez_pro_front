@@ -26,6 +26,7 @@ const initialState = {
   showNotification: false,
   notificationMessage: "",
   isLoggedIn: isTokenValid(),
+  dolarValue: localStorage.getItem("dolarValue") || 0,
 };
 
 const globalSlice = createSlice({
@@ -64,12 +65,16 @@ const globalSlice = createSlice({
     setOrderType: (state, action) => {
       state.orderType = action.payload;
     },
+    setDolarValue: (state, action) => {
+      state.dolarValue = action.payload;
+    },
   },
 });
 
 export const {
   setUser,
   setProductsWithDeleted,
+  setDolarValue,
   setView,
   setIsLoggedIn,
   setProducts,

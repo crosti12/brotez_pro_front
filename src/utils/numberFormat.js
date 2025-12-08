@@ -27,9 +27,9 @@ export function sumCommaStrings(val1, val2) {
   return sum.toFixed(3).replace(".", ",");
 }
 
-export function addDots(num) {
+export function addDots(num, decimals = 2) {
   if (typeof num === "number" && !isNaN(num)) {
-    return new Intl.NumberFormat("de-DE").format(num);
+    return new Intl.NumberFormat("de-DE").format(decimals ? num.toFixed(decimals) : num);
   }
 
   if (typeof num === "string") {

@@ -58,6 +58,9 @@
   "month": "Month",
   "year": "Year",
   "product": "Product",
+  "usd": "USD$",
+  "bs": "Bs",
+  "vegetable": "Vegetable",
   "errorMsgs": {
     "productsMissing": "Please add at least one product",
     "referenceFieldMissing": "The reference field is missing",

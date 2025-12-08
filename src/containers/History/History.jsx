@@ -12,13 +12,14 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForwardIos";
 import Button from "@mui/material/Button";
 import { Badge } from "primereact/badge";
+import { addDots } from "../../utils/numberFormat";
 
 const History = () => {
   const { updateOrder, deleteOrder } = useAPI();
   const [openEditOrderModal, setOpenEditOrderModal] = useState("");
   const [dataidx, setDataIdx] = useState(null);
   const [paymentInf, setPaymentInf] = useState({ paymentType: PAYMENT_TYPES[0], paymentId: "" });
-  const { t, orders, showMessage } = useGlobalState();
+  const { t, orders, showMessage, getConvertion } = useGlobalState();
   const [globalFilter, setGlobalFilter] = useState("");
 
   const sortedRows = useMemo(
@@ -66,7 +67,12 @@ const History = () => {
   const dateFormat = (rowData) => {
     const date = new Date(rowData.createdAt);
 
-    return format(date, "MM-dd");
+    return (
+      <div className="status-and-date">
+        <Badge severity={rowData.isPaid ? "success" : "warning"} style={{ width: "8px", height: "8px" }} />
+        <span className="date-format">{format(date, "dd hh:mm a")}</span>
+      </div>
+    );
   };
 
   const onRowclik = (rowData) => {
@@ -75,11 +81,15 @@ const History = () => {
     setOpenEditOrderModal(true);
   };
 
-  const statusTemplate = (rowData) => (
-    <Badge severity={rowData.isPaid ? "success" : "warning"} style={{ width: "15px", height: "15px" }} />
+  const totalTemplate = (rowData) => (
+    <div className="history-total-ellipsis">
+      <div>{addDots(rowData.currency === "usd" ? getConvertion(rowData.total) : rowData.total, 2)}Bs</div>
+      <div className="history-dollar-price">
+        {rowData.currency === "usd" ? rowData.total : getConvertion(rowData.total, "toDollar")}$
+      </div>
+    </div>
   );
-  const totalTemplate = (rowData) => <div className="history-total-ellipsis">{rowData.total}</div>;
-  const clientTemplate = (rowData) => <div className="history-total-ellipsis">{rowData.clientName || "-"}</div>;
+  const clientTemplate = (rowData) => <div className="history-client-ellipsis">{rowData.clientName || "-"}</div>;
 
   return (
     <div className="history-main">
@@ -107,10 +117,9 @@ const History = () => {
         }}
         currentPageReportTemplate="{first} to {last} of {totalRecords}"
       >
-        <Column field="createdAt" dataType="date" body={dateFormat} header={t("date")} />
-        <Column field="clientName" body={clientTemplate} header={t("client")} />
         <Column field="total" body={totalTemplate} header={t("total")} />
-        <Column field="isPaid" body={statusTemplate} header={t("status")} />
+        <Column field="clientName" body={clientTemplate} header={t("client")} />
+        <Column field="createdAt" dataType="date" body={dateFormat} header={t("date")} />
       </DataTable>
 
       <EditOrderModal
