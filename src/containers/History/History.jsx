@@ -85,7 +85,10 @@ const History = () => {
     <div className="history-total-ellipsis">
       <div>{addDots(rowData.currency === "usd" ? getConvertion(rowData.total) : rowData.total, 2)}Bs</div>
       <div className="history-dollar-price">
-        {rowData.currency === "usd" ? rowData.total : getConvertion(rowData.total, "toDollar")}$
+        {rowData.currency === "usd"
+          ? Number(rowData.total).toFixed(2)
+          : getConvertion(rowData.total, "toDollar").toFixed(2)}
+        $
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import useReq from "../components/useReq";
 import { setDolarValue, setOrders, setProducts, setProductsWithDeleted, setUser } from "./stateSlice";
 import axios from "axios";
 import { format } from "date-fns";
+import useDb from "../DB/useDb";
 
 const useAPI = () => {
   const dispatch = useDispatch();
@@ -10,15 +11,39 @@ const useAPI = () => {
   const postReq = useReq({ method: "POST" });
   const putReq = useReq({ method: "PUT" });
   const deleteReq = useReq({ method: "DELETE" });
+  const { getItem, getAllItems, saveCollection } = useDb();
 
   const getProducts = async () => {
     try {
-      const resp = await getReq({ params: "products" });
-      if (resp) {
-        dispatch(setProducts(resp.filter((pro) => !pro?.isDeleted)));
-        dispatch(setProductsWithDeleted(resp));
+      const productMetaData = await getItem("lastUpdated", "products");
+      const url = `products${productMetaData ? "?lastUpdated=" + productMetaData.updatedAt : ""}`;
+      const resp = await getReq({ params: url });
+
+      let allProducts = [];
+
+      if (!productMetaData) allProducts = resp;
+      else {
+        const savedProducts = await getAllItems("products");
+        if (!savedProducts || savedProducts.length === 0) {
+          allProducts = resp || [];
+        } else {
+          allProducts = savedProducts.map((product) => {
+            const orderUpdated = resp.find((productItem) => productItem._id === product._id);
+            return orderUpdated ? orderUpdated : product;
+          });
+
+          const newOrders = resp.filter((productItem) => !savedProducts.some((order) => order._id === productItem._id));
+          allProducts = [...allProducts, ...newOrders];
+        }
       }
-      return resp;
+
+      const filteredProducts = allProducts.filter((product) => !product?.isDeleted);
+
+      dispatch(setProducts(filteredProducts));
+      dispatch(setProductsWithDeleted(allProducts));
+
+      saveCollection("products", allProducts);
+      return true;
     } catch (error) {
       console.error(error);
     }
@@ -34,34 +59,17 @@ const useAPI = () => {
     }
   };
 
-  const onLogin = async ({ password = "", username = "" }) => {
-    if (!password || !username) return;
-    try {
-      const resp = await postReq({
-        params: "users/login",
-        body: { username: username.trim().toLowerCase(), password },
-      });
-      localStorage.setItem("token", resp.token);
-      localStorage.setItem("tokenDate", Date.now().toString());
-      return resp;
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const updateProduct = async (data) => {
     const id = data._id;
     const body = { ...data };
+    delete body.__v;
+    delete body._id;
+    delete body.createdAt;
+
     try {
-      delete body.__v;
-      delete body._id;
-      delete body.createdAt;
-      const resp = await putReq({ params: `products/id/${id}`, body });
-      if (resp) {
-        dispatch(setProducts(resp.filter((pro) => !pro?.isDeleted)));
-        dispatch(setProductsWithDeleted(resp));
-      }
-      return resp;
+      await putReq({ params: `products/id/${id}`, body });
+      await getProducts();
+      return true;
     } catch (error) {
       console.error(error);
     }
@@ -70,20 +78,43 @@ const useAPI = () => {
   const deleteProduct = async (data) => {
     const id = data._id;
     try {
-      const resp = await deleteReq({ params: `products/id/${id}` });
-      if (resp) {
-        dispatch(setProducts(resp.filter((pro) => !pro?.isDeleted)));
-        dispatch(setProductsWithDeleted(resp));
-      }
-      return resp;
+      await deleteReq({ params: `products/id/${id}` });
+      await getProducts();
+      return true;
     } catch (error) {
       console.error(error);
     }
   };
+
+  // ***********************************************************************
+
   const getOrders = async () => {
     try {
-      const resp = await getReq({ params: "orders" });
-      resp && dispatch(setOrders(resp));
+      const orderMetaData = await getItem("lastUpdated", "orders");
+      const url = `orders${orderMetaData ? "?lastUpdated=" + orderMetaData.updatedAt : ""}`;
+      const resp = await getReq({ params: url });
+
+      let allOrders = [];
+
+      if (!orderMetaData) allOrders = resp;
+      else {
+        const savedOrders = await getAllItems("orders");
+        if (!savedOrders || savedOrders.length === 0) {
+          allOrders = resp || [];
+        } else {
+          allOrders = savedOrders.map((order) => {
+            const orderUpdated = resp.find((orderItem) => orderItem._id === order._id);
+            return orderUpdated ? orderUpdated : order;
+          });
+
+          const newOrders = resp.filter((orderItem) => !savedOrders.some((order) => order._id === orderItem._id));
+          allOrders = [...allOrders, ...newOrders].filter((order) => !order?.isDeleted);
+        }
+      }
+
+      dispatch(setOrders(allOrders));
+      saveCollection("orders", allOrders);
+      return true;
     } catch (error) {
       console.error(error);
     }
@@ -92,9 +123,9 @@ const useAPI = () => {
   const createOrder = async (data) => {
     const body = { ...data, area: "san onofre" };
     try {
-      const resp = await postReq({ params: "orders", body });
-      resp && dispatch(setOrders(resp));
-      return resp;
+      await postReq({ params: "orders", body });
+      await getOrders();
+      return true;
     } catch (error) {
       console.error(error);
       return false;
@@ -104,7 +135,7 @@ const useAPI = () => {
   const updateOrder = async (updatedInfo, id) => {
     try {
       const resp = await putReq({ params: `orders/id/${id}`, body: updatedInfo });
-      resp && dispatch(setOrders(resp));
+      await getOrders();
       return resp;
     } catch (error) {
       console.error(error);
@@ -114,12 +145,14 @@ const useAPI = () => {
   const deleteOrder = async (id) => {
     try {
       const resp = await deleteReq({ params: `orders/id/${id}` });
-      resp && dispatch(setOrders(resp));
+      await getOrders();
       return resp;
     } catch (error) {
       console.error(error);
     }
   };
+
+  // *******************************************************************************
 
   const updateUser = async (newData, id) => {
     try {
@@ -130,6 +163,7 @@ const useAPI = () => {
       console.error(error);
     }
   };
+
   const getDollar = async () => {
     try {
       const resp = await axios({
@@ -147,6 +181,21 @@ const useAPI = () => {
       console.error(error);
     }
   };
+  const onLogin = async ({ password = "", username = "" }) => {
+    if (!password || !username) return;
+    try {
+      const resp = await postReq({
+        params: "users/login",
+        body: { username: username.trim().toLowerCase(), password },
+      });
+      localStorage.setItem("token", resp.token);
+      localStorage.setItem("tokenDate", Date.now().toString());
+      return resp;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return {
     getProducts,
     getDollar,

@@ -154,7 +154,7 @@ const Order = () => {
                 <div className="flex-col">
                   <span>{addDots(orderProductPrice, 2)}/Bs</span>
                   <span className="order-product-dolar-price">
-                    {getConvertion(orderProductPrice, isCurrencyDollar ? "toDollar" : "")}/$
+                    {getConvertion(orderProductPrice, isCurrencyDollar ? "toDollar" : "").toFixed(2)}/$
                   </span>
                 </div>
               </div>
@@ -201,7 +201,7 @@ const Order = () => {
           <div>
             <span className="total-order-price-amount"> Total: {addDots(result.total)}</span> Bs
             <br />
-            <span>{getConvertion(result.total, "toDollar")}</span> $
+            <span>{getConvertion(result.total, "toDollar").toFixed(2)}</span> $
           </div>
         </span>
       </>

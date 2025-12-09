@@ -39,7 +39,7 @@ const useGlobalState = () => {
     if (convertionType === "toBs") result = convertValueSafe * state.dolarValue;
     else {
       result = convertValueSafe / state.dolarValue;
-      result = result.toFixed(2);
+      result = result;
     }
 
     return result;

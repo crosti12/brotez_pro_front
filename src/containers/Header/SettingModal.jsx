@@ -18,12 +18,6 @@ const SettingModal = ({ visible = false, setVisible = () => {} }) => {
   const [loading, setIsloading] = useState(false);
   const [state, setState] = useState(user);
 
-  const clearAllLocalStorage = () => {
-    setIsLoggedIn(false);
-    localStorage.clear();
-    location.reload();
-  };
-
   const onSaveSettings = async () => {
     setIsloading(true);
     const resp = await updateUser(state, user._id || user.id);
@@ -31,6 +25,33 @@ const SettingModal = ({ visible = false, setVisible = () => {} }) => {
     setIsloading(false);
   };
 
+  const clearAllLocalStorage = async () => {
+    setIsLoggedIn(false);
+    localStorage.clear();
+    location.reload();
+    try {
+      localStorage.clear();
+      sessionStorage.clear();
+
+      if (indexedDB && indexedDB.databases) {
+        const dbs = await indexedDB.databases();
+        dbs.forEach((db) => {
+          indexedDB.deleteDatabase(db.name);
+        });
+      } else {
+        indexedDB.deleteDatabase("brotez_local_db");
+      }
+
+      if ("caches" in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map((key) => caches.delete(key)));
+      }
+
+      console.log("All caches cleared!");
+    } catch (err) {
+      console.error("Error clearing caches:", err);
+    }
+  };
   return (
     <Dialog
       PaperProps={{

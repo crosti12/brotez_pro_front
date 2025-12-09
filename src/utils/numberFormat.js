@@ -56,17 +56,29 @@ export function calculate(operation, ...args) {
     }
   });
 
+  const round = (num, decimals = 10) => {
+    const factor = Math.pow(10, decimals);
+    return Math.round(num * factor) / factor;
+  };
+
+  let result;
   switch (operation) {
     case "add":
-      return numbers.reduce((acc, n) => acc + n, 0);
+      result = numbers.reduce((acc, n) => acc + n, 0);
+      break;
     case "subtract":
-      return numbers.reduce((acc, n) => acc - n);
+      result = numbers.reduce((acc, n) => acc - n);
+      break;
     case "multiply":
-      return numbers.reduce((acc, n) => acc * n, 1);
+      result = numbers.reduce((acc, n) => acc * n, 1);
+      break;
     case "divide":
-      return numbers.reduce((acc, n) => acc / n);
+      result = numbers.reduce((acc, n) => acc / n);
+      break;
     default:
       console.error("Unsupported operation");
       return 0;
   }
+
+  return round(result, 10);
 }

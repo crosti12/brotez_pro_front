@@ -18,14 +18,23 @@ const AddProductModal = ({ visible = false, setVisible = () => {}, mode = "", da
 
   const onSave = async () => {
     setIsloading(true);
-    if (!data.price) return showMessage(t("errorMsgs.priceMissing"), "warn");
-    if (!data.name) return showMessage(t("errorMsgs.nameMissing"), "warn");
 
-    const updatedProduct = { ...data, author: user.id || user._id };
+    if (!data.price) {
+      showMessage(t("errorMsgs.priceMissing"), "warn");
+      setIsloading(false);
+      return;
+    }
+    if (!data.name) {
+      showMessage(t("errorMsgs.nameMissing"), "warn");
+      setIsloading(false);
+      return;
+    }
+
+    const updatedProduct = { ...data, name: (data.name || "").trim(), author: user.id || user._id };
     const resp =
       mode === "edit"
         ? await updateProduct(updatedProduct)
-        : await onCreateProduct({ ...data, author: user.id || user._id });
+        : await onCreateProduct({ ...data, name: (data.name || "").trim(), author: user.id || user._id });
     if (resp) {
       showMessage(t("productSaved"), "success");
       setVisible(false);
