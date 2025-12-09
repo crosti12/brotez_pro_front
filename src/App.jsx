@@ -16,7 +16,12 @@ function App() {
         await Promise.all([getProducts(), getOrders(), getDollar()]);
       })();
     }
+
+    const intervalID = setInterval(() => getDollar(), 12 * 60 * 60 * 1000);
+
     i18n.changeLanguage(user?.language || "es");
+
+    return () => clearInterval(intervalID);
   }, [isLoggedIn, user]);
 
   return <div className="main-layout">{isLoggedIn ? <Routes /> : <Login />}</div>;

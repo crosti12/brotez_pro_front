@@ -61,7 +61,7 @@ const Products = () => {
 
   const convertionTemplate = (rowData) => (
     <div className="products-total-ellipsis">
-      {rowData?.currency === "usd" ? getConvertion(rowData?.price || 0) : 0}
+      {(rowData?.currency === "usd" ? getConvertion(rowData?.price || 0) : 0).toFixed(2)}
     </div>
   );
 

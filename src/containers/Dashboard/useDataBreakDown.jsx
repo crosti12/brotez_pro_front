@@ -18,7 +18,7 @@ import useGlobalState from "../../actions/useGlobalState";
 import { calculate } from "../../utils/numberFormat";
 
 const useDataBreakDown = ({ sortBy = "", selectedDate }) => {
-  const { orders, productsWithDeleted } = useGlobalState();
+  const { orders, productsWithDeleted, getConvertion } = useGlobalState();
 
   const getProductInfo = useCallback(
     (products = [], bestSoldProducts) =>
@@ -26,11 +26,13 @@ const useDataBreakDown = ({ sortBy = "", selectedDate }) => {
         (acc, product) => {
           const stateProduct = productsWithDeleted.find((pro) => pro?._id === product?.productId);
           if (!stateProduct) return acc;
+          const isDollar = product.currencyAt === "usd";
+          const pricedAt = isDollar ? product.pricedAt : getConvertion(product.pricedAt, "toDollar");
 
           let productCost = 0;
           let productProfit = 0;
 
-          const productExpense = calculate("multiply", product.pricedAt, product.quantity);
+          const productExpense = calculate("multiply", pricedAt, product.quantity);
           acc.productExpense += productExpense;
 
           if (product.costAt || stateProduct.cost) {
@@ -123,7 +125,6 @@ const useDataBreakDown = ({ sortBy = "", selectedDate }) => {
     const chart = buildChartRange(sortBy, now, start, end);
 
     const chartIndex = (date) => {
-      // if (sortBy === "custom") return date.getHours();
       if (sortBy === "week") {
         const days = eachDayOfInterval({ start, end });
         return days.findIndex((d) => d.toDateString() === date.toDateString());
@@ -139,23 +140,22 @@ const useDataBreakDown = ({ sortBy = "", selectedDate }) => {
         const orderDate = new Date(order.createdAt);
 
         if (start && end && isWithinInterval(orderDate, { start, end })) {
-          const info = getProductInfo(order?.products || [], acc.bestSoldProducts);
+          const info = getProductInfo(order?.products || [], order.isPaid ? acc.bestSoldProducts : []);
           const { productProfit, productExpense, extractedProducts } = info;
-
-          if (order.isPaid) {
-            const idx = chartIndex(orderDate);
-            if (idx >= 0) {
-              chart.sells[idx] += 1;
-              chart.profits[idx] += productProfit;
-            }
-          }
-
           if (order.isPaid) {
             acc.sellCount += 1;
 
-            if (extractedProducts.size > 0) {
-              acc.productsWitCost = new Set([...acc.productsWitCost, ...extractedProducts]);
-            }
+            const idx = chartIndex(orderDate);
+
+            const increaseCount = () => {
+              chart.sells[idx] += 1;
+              chart.profits[idx] += productProfit;
+            };
+
+            idx >= 0 && increaseCount();
+
+            extractedProducts.size > 0 &&
+              (acc.productsWitCost = new Set([...acc.productsWitCost, ...extractedProducts]));
 
             acc.expense += productExpense || 0;
             acc.profit += productProfit || 0;

@@ -60,6 +60,7 @@
   "product": "Product",
   "usd": "USD$",
   "bs": "Bs",
+  "convertion": "Convertion",
   "vegetable": "Vegetable",
   "errorMsgs": {
     "productsMissing": "Please add at least one product",

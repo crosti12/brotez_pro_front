@@ -88,24 +88,17 @@ const EditOrderModal = ({
       const productLines = data.products.map((orderedProduct) => {
         const product = productsWithDeleted.find((p) => p._id === orderedProduct.productId);
         if (!product) return ``;
-
         const isCurrDollar = orderedProduct.currencyAt === "usd";
         const pricedAtPro = orderedProduct.pricedAt;
         const pricedAtBs = isCurrDollar ? getConvertion(pricedAtPro, "toBs") : pricedAtPro;
-        const pricedAtDollar = isCurrDollar ? pricedAtPro : getConvertion(pricedAtPro, "toDollar");
-
         const lineTotalBs = calculate("multiply", pricedAtBs, orderedProduct.quantity);
-        const lineTotalDollar = calculate("multiply", pricedAtDollar, orderedProduct.quantity);
 
-        return `* ${product.name} - ${orderedProduct.quantity}${product.unit} -> ${addDots(lineTotalBs)} Bs / ${addDots(
-          lineTotalDollar
-        )} $`;
+        return `* ${product.name} - ${orderedProduct.quantity}${product.unit} -> ${addDots(lineTotalBs)}Bs`;
       });
 
       const clientInfo = `🛒 Gracias por tu compra en Brotez. Aquí están los detalles de tu pedido:`;
       const header = `Fecha: ${dateFormat(data.createdAt)}`;
       const clientName = data?.clientName ? `Cliente: ${data.clientName}` : "";
-      const clientPhone = data?.clientPhone ? `Teléfono: ${data.clientPhone}` : "";
 
       const isDollar = data?.currency === "usd";
       const totalBs = isDollar ? getConvertion(data.total, "toBs") : data.total;
@@ -113,9 +106,7 @@ const EditOrderModal = ({
 
       const total = `Total: ${addDots(totalBs)} Bs \n$ref: ${addDots(totalDollar)}$`;
 
-      const text = `${clientInfo}\n${header}\n${clientName}\n${clientPhone}\n\nProductos:\n${productLines.join(
-        "\n"
-      )}\n\n${total}`;
+      const text = `${clientInfo}\n\n${header}\n${clientName}\n\nProductos:\n${productLines.join("\n")}\n\n${total}`;
 
       await navigator.clipboard.writeText(text);
       showMessage(t("orderCopied"), "success");
@@ -146,11 +137,11 @@ const EditOrderModal = ({
         const producctDollarPrice = isCurrDollar ? pricedAtPro : getConvertion(pricedAtPro, "toDollar");
 
         const quantityFormat = `${orderedProduct.quantity}${product.unit} x ${producctDollarPrice}$/${product.unit}`;
-
+        const price = calculate("multiply", pricedAt, orderedProduct.quantity);
         return {
           id: ordProId,
           name: product.name + (product?.isDeleted ? " (D)" : ""),
-          price: calculate("multiply", pricedAt, orderedProduct.quantity),
+          price,
           quantity: quantityFormat,
         };
       }) ?? [];
@@ -168,6 +159,7 @@ const EditOrderModal = ({
       </DataTable>
     );
   }
+
   const getTotalLabels = () => {
     const total = data?.total;
     const isDollar = data?.currency === "usd";

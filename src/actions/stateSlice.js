@@ -26,7 +26,7 @@ const initialState = {
   showNotification: false,
   notificationMessage: "",
   isLoggedIn: isTokenValid(),
-  dolarValue: localStorage.getItem("dolarValue") || 0,
+  dolarValue: Number(localStorage.getItem("dolarValue") || 0),
 };
 
 const globalSlice = createSlice({
@@ -66,6 +66,7 @@ const globalSlice = createSlice({
       state.orderType = action.payload;
     },
     setDolarValue: (state, action) => {
+      localStorage.setItem("dolarValue", action.payload);
       state.dolarValue = action.payload;
     },
   },

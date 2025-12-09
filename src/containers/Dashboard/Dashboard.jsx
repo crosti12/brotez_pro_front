@@ -12,6 +12,7 @@ import Button from "@mui/material/Button";
 import ArrowBackIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForwardIos";
 import DashboardCharts from "./DashboardCharts";
+import useGlobalState from "../../actions/useGlobalState";
 
 const initialDate = localStorage.getItem("selectedDate") ? new Date(localStorage.getItem("selectedDate")) : null;
 const initialSortBy = localStorage.getItem("sortBy") || "today";
@@ -19,7 +20,7 @@ const initialSortBy = localStorage.getItem("sortBy") || "today";
 const Dashboard = () => {
   const [sortBy, setSortBy] = useState(initialSortBy);
   const [selectedDate, setSelectedDate] = useState(initialDate);
-
+  const { getConvertion } = useGlobalState();
   const { t } = useTranslation();
   const result = useDataBreakDown({
     sortBy,
@@ -80,15 +81,27 @@ const Dashboard = () => {
 
         <div className="dashboard-sells-info">
           <div className="data-card-group sell-count-group">
-            <p className="body-font font-accent">{t("sellCount")}</p>
-            <p>{sellCount}</p>
-            <p className="body-font">{addDots(expense.toFixed(2))}</p>
+            <p className="body-font font-accent">
+              {t("sellCount")}: {sellCount}
+            </p>
+            <p>{addDots(expense.toFixed(2))}</p>
+            <p className="body-font">{addDots(getConvertion(expense).toFixed(2))}</p>
           </div>
           <div>
             <div className="data-card-group dashboard-profit-group">
-              <p className="body-font font-accent">{t("profit")}</p>
-              <p>P#{productsWitCost.size}</p>
-              <p className="body-font">{addDots(profit.toFixed(2))}</p>
+              <p className="body-font font-accent">
+                {t("profit")}: {productsWitCost.size}
+              </p>
+              <p>{addDots(profit.toFixed(2))}</p>
+              <p className="body-font">{addDots(getConvertion(profit).toFixed(2))}</p>
+            </div>
+          </div>
+
+          <div>
+            <div className="data-card-group dashboard-profit-group">
+              <p className="body-font font-accent">{t("avgBuy")}</p>
+              <p>{(expense / sellCount || 0).toFixed(2)}</p>
+              <p className="body-font">{addDots(getConvertion(expense / sellCount || 0).toFixed(2))}</p>
             </div>
           </div>
           <div>

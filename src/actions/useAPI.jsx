@@ -2,6 +2,7 @@ import { useDispatch } from "react-redux";
 import useReq from "../components/useReq";
 import { setDolarValue, setOrders, setProducts, setProductsWithDeleted, setUser } from "./stateSlice";
 import axios from "axios";
+import { format } from "date-fns";
 
 const useAPI = () => {
   const dispatch = useDispatch();
@@ -135,7 +136,13 @@ const useAPI = () => {
         url: "https://api.dolarvzla.com/public/exchange-rate",
         method: "GET",
       });
-      dispatch(setDolarValue(resp.data.current.usd));
+      const today = format(new Date(), "yyyy-MM-dd");
+      const data = resp?.data;
+      if (data.current?.date !== today) {
+        dispatch(setDolarValue(data.previous.usd));
+      } else {
+        dispatch(setDolarValue(data.current.usd));
+      }
     } catch (error) {
       console.error(error);
     }

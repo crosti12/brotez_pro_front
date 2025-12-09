@@ -131,7 +131,7 @@ const Order = () => {
     setIsloading(false);
   };
 
-  const getproducList = () => {
+  const getproductList = () => {
     const result = localProducts.reduce(
       (acc, orderProduct, index) => {
         const stateProduct = productsWithDeleted.find((pro) => pro._id === orderProduct.product._id);
@@ -217,7 +217,7 @@ const Order = () => {
         </Button>
       </div>
 
-      <div className="new-order__product-list">{getproducList()}</div>
+      <div className="new-order__product-list">{getproductList()}</div>
       <div className="new-order__client-data">
         <div className="order-switches">
           <div className="order-switch" onClick={() => onInputChange("isPaid", !order.isPaid)}>

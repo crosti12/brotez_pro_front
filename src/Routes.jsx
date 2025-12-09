@@ -9,7 +9,7 @@ import "./layout.css";
 // import UserManagement from "./containers/UserManagement/UserManagement";
 
 const Routes = () => {
-  const { view } = useGlobalState();
+  const { view, dolarValue } = useGlobalState();
   const routes = {
     dashboard: <Dashboard />,
     addOrder: <Order />,
@@ -21,8 +21,7 @@ const Routes = () => {
   return (
     <div className="app-layout">
       <Header />
-      <main className="main-content">{routes[view]}</main>
-      <NavBar />
+      {dolarValue ? <main className="main-content">{routes[view]}</main> : "Dolar value not found"} <NavBar />
     </div>
   );
 };
