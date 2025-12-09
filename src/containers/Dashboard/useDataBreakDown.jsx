@@ -38,7 +38,10 @@ const useDataBreakDown = ({ sortBy = "", selectedDates = {}, indexDate }) => {
           acc.productExpense += productExpense;
 
           if (product.costAt || stateProduct.cost) {
-            productCost = calculate("multiply", product.costAt || stateProduct.cost, product.quantity);
+            const productCosted = isDollar
+              ? product.costAt
+              : getConvertion(product.costAt || stateProduct.cost, "toDollar");
+            productCost = calculate("multiply", productCosted, product.quantity);
             productProfit = productExpense - productCost;
 
             acc.productProfit += productProfit;
@@ -95,12 +98,6 @@ const useDataBreakDown = ({ sortBy = "", selectedDates = {}, indexDate }) => {
       const labels = range.map((d) => d.toLocaleString("default", { month: "short" }));
       return { labels, sells: Array(labels.length).fill(0), profits: Array(labels.length).fill(0) };
     }
-
-    // if (sortBy === "custom") {
-    //   const range = eachMonthOfInterval({ start, end });
-    //   const labels = range.map((d) => d.toLocaleString("default", { month: "short" }));
-    //   return { labels, sells: Array(labels.length).fill(0), profits: Array(labels.length).fill(0) };
-    // }
 
     return { labels: [], sells: [], profits: [] };
   };
