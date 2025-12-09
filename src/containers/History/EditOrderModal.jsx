@@ -134,7 +134,7 @@ const EditOrderModal = ({
         const isCurrDollar = orderedProduct.currencyAt === "usd";
         const pricedAtPro = orderedProduct.pricedAt;
         const pricedAt = isCurrDollar ? getConvertion(pricedAtPro, "toBs") : pricedAtPro;
-        const producctDollarPrice = isCurrDollar ? pricedAtPro : getConvertion(pricedAtPro, "toDollar");
+        const producctDollarPrice = isCurrDollar ? pricedAtPro : getConvertion(pricedAtPro, "toDollar").toFixed(2);
 
         const quantityFormat = `${orderedProduct.quantity}${product.unit} x ${producctDollarPrice}$/${product.unit}`;
         const price = calculate("multiply", pricedAt, orderedProduct.quantity);
