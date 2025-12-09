@@ -13,11 +13,13 @@ import {
   eachDayOfInterval,
   eachMonthOfInterval,
   format,
+  setMinutes,
+  setHours,
 } from "date-fns";
 import useGlobalState from "../../actions/useGlobalState";
 import { calculate } from "../../utils/numberFormat";
 
-const useDataBreakDown = ({ sortBy = "", selectedDate }) => {
+const useDataBreakDown = ({ sortBy = "", selectedDates = {}, indexDate }) => {
   const { orders, productsWithDeleted, getConvertion } = useGlobalState();
 
   const getProductInfo = useCallback(
@@ -66,10 +68,15 @@ const useDataBreakDown = ({ sortBy = "", selectedDate }) => {
   );
 
   const buildChartRange = (sortBy, now, start, end) => {
-    // if (sortBy === "today") {
-    //   const labels = eachHourOfInterval({ start, end }).map((h) => `${h.getHours()}:00`);
-    //   return { labels, sells: Array(labels.length).fill(0), profits: Array(labels.length).fill(0) };
-    // }
+    if (sortBy === "day") {
+      const hours = Array.from({ length: 15 }, (_, i) => 6 + i);
+      const labels = hours.map((h) => format(setMinutes(setHours(now, h), 0), "h a"));
+      return {
+        labels,
+        sells: Array(labels.length).fill(0),
+        profits: Array(labels.length).fill(0),
+      };
+    }
 
     if (sortBy === "week") {
       const range = eachDayOfInterval({ start, end });
@@ -89,15 +96,22 @@ const useDataBreakDown = ({ sortBy = "", selectedDate }) => {
       return { labels, sells: Array(labels.length).fill(0), profits: Array(labels.length).fill(0) };
     }
 
+    // if (sortBy === "custom") {
+    //   const range = eachMonthOfInterval({ start, end });
+    //   const labels = range.map((d) => d.toLocaleString("default", { month: "short" }));
+    //   return { labels, sells: Array(labels.length).fill(0), profits: Array(labels.length).fill(0) };
+    // }
+
     return { labels: [], sells: [], profits: [] };
   };
 
   const result = useMemo(() => {
-    const now = new Date();
-    let start, end;
+    const now = indexDate;
+    let start = null;
+    let end = null;
 
     switch (sortBy) {
-      case "today":
+      case "day":
         start = startOfDay(now);
         end = endOfDay(now);
         break;
@@ -113,10 +127,6 @@ const useDataBreakDown = ({ sortBy = "", selectedDate }) => {
         start = startOfYear(now);
         end = endOfYear(now);
         break;
-      case "custom":
-        start = startOfDay(new Date(selectedDate));
-        end = endOfDay(new Date(selectedDate));
-        break;
       default:
         start = null;
         end = null;
@@ -125,13 +135,23 @@ const useDataBreakDown = ({ sortBy = "", selectedDate }) => {
     const chart = buildChartRange(sortBy, now, start, end);
 
     const chartIndex = (date) => {
+      if (sortBy === "day") {
+        const hour = date.getHours();
+        if (hour >= 6 && hour <= 20) {
+          return hour - 6;
+        }
+        return -1;
+      }
       if (sortBy === "week") {
         const days = eachDayOfInterval({ start, end });
         return days.findIndex((d) => d.toDateString() === date.toDateString());
       }
-      if (sortBy === "month") return date.getDate() - 1;
-      if (sortBy === "year") return date.getMonth();
-
+      if (sortBy === "month") {
+        return date.getDate() - 1;
+      }
+      if (sortBy === "year") {
+        return date.getMonth();
+      }
       return -1;
     };
 
@@ -180,7 +200,7 @@ const useDataBreakDown = ({ sortBy = "", selectedDate }) => {
         chartProfits: chart.profits,
       }
     );
-  }, [orders, sortBy, getProductInfo, selectedDate]);
+  }, [orders, sortBy, getProductInfo, selectedDates, indexDate]);
 
   return result;
 };

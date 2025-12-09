@@ -62,6 +62,8 @@
   "bs": "Bs",
   "vegetable": "Vegetal",
   "convertion": "Conversión",
+  "range": "Rango",
+  "day": "Día",
   "errorMsgs": {
     "productsMissing": "Por favor agregue al menos un producto",
     "referenceFieldMissing": "Falta el campo de referencia",

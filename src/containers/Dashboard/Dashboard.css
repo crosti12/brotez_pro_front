@@ -36,3 +36,19 @@
   padding: 8px;
   font-size: 12px;
 }
+.date-navigation-btns {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+}
+
+.date-navigation-btns > button {
+  border-radius: 50%;
+  height: 35px;
+  width: 35px;
+  font-size: 20px;
+  padding: 0;
+  border: 1px solid transparent;
+}

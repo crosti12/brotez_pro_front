@@ -13,19 +13,28 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForwardIos";
 import DashboardCharts from "./DashboardCharts";
 import useGlobalState from "../../actions/useGlobalState";
+import { format } from "date-fns";
 
 const initialDate = localStorage.getItem("selectedDate") ? new Date(localStorage.getItem("selectedDate")) : null;
-const initialSortBy = localStorage.getItem("sortBy") || "today";
+const initialSortBy = localStorage.getItem("sortBy") || "day";
+const initialIndexDAte = localStorage.getItem("selectedDateIndex")
+  ? new Date(localStorage.getItem("selectedDateIndex"))
+  : new Date();
 
 const Dashboard = () => {
   const [sortBy, setSortBy] = useState(initialSortBy);
-  const [selectedDate, setSelectedDate] = useState(initialDate);
+  const [selectedDates, setSelectedDate] = useState({ start: initialDate, end: initialDate });
+  const [indexDate, setIndexDate] = useState(initialIndexDAte);
+
   const { getConvertion } = useGlobalState();
   const { t } = useTranslation();
+
   const result = useDataBreakDown({
     sortBy,
-    selectedDate,
+    selectedDates,
+    indexDate,
   });
+
   const {
     sellCount,
     expense,
@@ -38,7 +47,35 @@ const Dashboard = () => {
     chartSells,
     chartProfits,
   } = result;
+
   const sortedBestSoldProd = bestSoldProducts.sort((a, b) => b.profit - a.profit);
+
+  const onMoveNextAndBack = (direction = "backwards") => {
+    let result = new Date(indexDate);
+
+    switch (sortBy) {
+      case "day":
+        result.setDate(result.getDate() + (direction === "forward" ? 1 : -1));
+        break;
+
+      case "week":
+        result.setDate(result.getDate() + (direction === "forward" ? 7 : -7));
+        break;
+
+      case "month":
+        result.setMonth(result.getMonth() + (direction === "forward" ? 1 : -1));
+        break;
+
+      case "year":
+        result.setFullYear(result.getFullYear() + (direction === "forward" ? 1 : -1));
+        break;
+
+      default:
+        result = indexDate;
+    }
+    localStorage.setItem("selectedDateIndex", result.toISOString());
+    setIndexDate(result);
+  };
 
   return (
     <div className="dashboard">
@@ -53,30 +90,17 @@ const Dashboard = () => {
             }}
             displayEmpty
           >
-            <MenuItem value={"today"}>{t("today")}</MenuItem>
+            <MenuItem value={"day"}>{t("day")}</MenuItem>
             <MenuItem value={"week"}>{t("week")}</MenuItem>
             <MenuItem value={"month"}>{t("month")}</MenuItem>
             <MenuItem value={"year"}>{t("year")}</MenuItem>
-            <MenuItem value={"custom"}>{t("date")}</MenuItem>
           </Select>
 
-          {sortBy === "custom" && (
-            <Calendar
-              value={selectedDate}
-              className="custom-date"
-              onChange={(e) => {
-                setSelectedDate(e.value);
-                if (e.value) {
-                  localStorage.setItem("selectedDate", e.value.toISOString());
-                } else {
-                  localStorage.removeItem("selectedDate");
-                }
-              }}
-              dateFormat="yy-mm-dd"
-              showIcon
-              placeholder={t("selectDate")}
-            />
-          )}
+          <div className="date-navigation-btns">
+            <button onClick={() => onMoveNextAndBack("backwards")}>{"<"}</button>
+            {format(indexDate, "yyyy-MM-dd")}
+            <button onClick={() => onMoveNextAndBack("forward")}>{">"}</button>
+          </div>
         </div>
 
         <div className="dashboard-sells-info">
