@@ -64,6 +64,7 @@
   "vegetable": "Vegetable",
   "range": "Range",
   "day": "Day",
+  "avgBuy": "Average Buy",
   "errorMsgs": {
     "productsMissing": "Please add at least one product",
     "referenceFieldMissing": "The reference field is missing",

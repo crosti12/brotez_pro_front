@@ -64,6 +64,7 @@
   "convertion": "Conversión",
   "range": "Rango",
   "day": "Día",
+  "avgBuy": "Compra promedio",
   "errorMsgs": {
     "productsMissing": "Por favor agregue al menos un producto",
     "referenceFieldMissing": "Falta el campo de referencia",
