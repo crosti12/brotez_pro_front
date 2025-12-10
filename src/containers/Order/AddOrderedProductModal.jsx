@@ -19,6 +19,7 @@ const AddOrderedProductModal = ({
   const [data, setData] = useState(initialState);
   const { products } = useGlobalState();
   const amountField = useRef(null);
+  const amountFieldSecond = useRef(null);
   const onClose = () => {
     setData(initialState);
     setVisible(false);
@@ -32,6 +33,7 @@ const AddOrderedProductModal = ({
 
   const onProductChange = (e, value) => {
     amountField.current?.focus?.();
+    amountFieldSecond.current?.focus?.();
     setData((prev) => {
       const newProduct = value;
       return {
@@ -94,7 +96,7 @@ const AddOrderedProductModal = ({
                 onClick={(e) => moveCursorToEnd(e.target)}
                 onChange={onQuantityChange}
                 key={"differentKey2"}
-                inputRef={amountField}
+                inputRef={amountFieldSecond}
               />
             )}
             <p className="new-order-product-unit">{data.unit}</p>
