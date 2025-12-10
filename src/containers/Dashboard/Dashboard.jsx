@@ -108,31 +108,31 @@ const Dashboard = () => {
             <p className="body-font font-accent">
               {t("sellCount")}: {sellCount}
             </p>
-            <p>{addDots(expense.toFixed(2))}</p>
-            <p className="body-font">{addDots(getConvertion(expense).toFixed(2))}</p>
+            <p>{addDots(expense.toFixed(2))} $</p>
+            <p className="body-font">{addDots(getConvertion(expense).toFixed(2))} Bs</p>
           </div>
           <div>
             <div className="data-card-group dashboard-profit-group">
               <p className="body-font font-accent">
                 {t("profit")}: {productsWitCost.size}
               </p>
-              <p>{addDots(profit.toFixed(2))}</p>
-              <p className="body-font">{addDots(getConvertion(profit).toFixed(2))}</p>
+              <p>{addDots(profit.toFixed(2))} $</p>
+              <p className="body-font">{addDots(getConvertion(profit).toFixed(2))} Bs</p>
             </div>
           </div>
 
           <div>
             <div className="data-card-group dashboard-profit-group">
               <p className="body-font font-accent">{t("avgBuy")}</p>
-              <p>{(expense / sellCount || 0).toFixed(2)}</p>
-              <p className="body-font">{addDots(getConvertion(expense / sellCount || 0).toFixed(2))}</p>
+              <p>{(expense / sellCount || 0).toFixed(2)} $</p>
+              <p className="body-font">{addDots(getConvertion(expense / sellCount || 0).toFixed(2))} Bs</p>
             </div>
           </div>
           <div>
             <div className="data-card-group dashboard-profit-group">
               <p className="body-font font-accent-n">{t("due")}</p>
               <p>#{dueCount}</p>
-              <p className="body-font">{addDots(dueExpense.toFixed(2))}</p>
+              <p className="body-font">{addDots(dueExpense.toFixed(2))} $</p>
             </div>
           </div>
         </div>
