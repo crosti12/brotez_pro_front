@@ -3,7 +3,7 @@ import Dialog from "@mui/material/Dialog";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import useGlobalState from "../../actions/useGlobalState";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { formatDigits } from "../../utils/numberFormat";
 
 const initialState = { unit: "", quantity: "0,000", name: "", product: {} };
@@ -18,7 +18,7 @@ const AddOrderedProductModal = ({
 }) => {
   const [data, setData] = useState(initialState);
   const { products } = useGlobalState();
-
+  const amountField = useRef(null);
   const onClose = () => {
     setData(initialState);
     setVisible(false);
@@ -31,6 +31,7 @@ const AddOrderedProductModal = ({
   const memoProducts = useMemo(() => products.map((ms) => ({ ...ms, label: ms.name })), [products]);
 
   const onProductChange = (e, value) => {
+    amountField.current?.focus?.();
     setData((prev) => {
       const newProduct = value;
       return {
@@ -82,6 +83,7 @@ const AddOrderedProductModal = ({
                 onClick={(e) => moveCursorToEnd(e.target)}
                 onChange={onQuantityChange}
                 key={"differentKey"}
+                inputRef={amountField}
               />
             ) : (
               <TextField
@@ -92,6 +94,7 @@ const AddOrderedProductModal = ({
                 onClick={(e) => moveCursorToEnd(e.target)}
                 onChange={onQuantityChange}
                 key={"differentKey2"}
+                inputRef={amountField}
               />
             )}
             <p className="new-order-product-unit">{data.unit}</p>
