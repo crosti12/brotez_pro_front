@@ -42,7 +42,9 @@ const globalSlice = createSlice({
       state.view = action.payload;
     },
     setProducts: (state, action) => {
-      state.products = action.payload;
+      state.products = (action.payload || []).sort((a, b) => {
+        return a.name.localeCompare(b.name);
+      });
     },
     setOrders: (state, action) => {
       state.orders = action.payload;
