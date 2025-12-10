@@ -71,7 +71,7 @@ const Products = () => {
         <DataTable
           className="product-table"
           paginator
-          rows={10}
+          rows={11}
           paginatorTemplate={{
             layout: "PrevPageLink CurrentPageReport NextPageLink",
             PrevPageLink: (options) => (

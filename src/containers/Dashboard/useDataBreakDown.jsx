@@ -39,8 +39,9 @@ const useDataBreakDown = ({ sortBy = "", selectedDates = {}, indexDate }) => {
 
           if (product.costAt || stateProduct.cost) {
             const productCosted = isDollar
-              ? product.costAt
+              ? product.costAt || stateProduct.cost
               : getConvertion(product.costAt || stateProduct.cost, "toDollar");
+
             productCost = calculate("multiply", productCosted, product.quantity);
             productProfit = productExpense - productCost;
 
