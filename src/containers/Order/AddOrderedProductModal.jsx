@@ -81,6 +81,7 @@ const AddOrderedProductModal = ({
                 onFocus={(e) => moveCursorToEnd(e.target)}
                 onClick={(e) => moveCursorToEnd(e.target)}
                 onChange={onQuantityChange}
+                key={"differentKey"}
               />
             ) : (
               <TextField
@@ -90,6 +91,7 @@ const AddOrderedProductModal = ({
                 onFocus={(e) => moveCursorToEnd(e.target)}
                 onClick={(e) => moveCursorToEnd(e.target)}
                 onChange={onQuantityChange}
+                key={"differentKey2"}
               />
             )}
             <p className="new-order-product-unit">{data.unit}</p>
