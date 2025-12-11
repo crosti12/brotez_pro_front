@@ -32,7 +32,7 @@ const AddOrderedProductModal = ({
   const memoProducts = useMemo(() => products.map((ms) => ({ ...ms, label: ms.name })), [products]);
 
   const onProductChange = (e, value) => {
-    setTimeout(() => amountField.current?.focus?.(), 100);
+    setTimeout(() => amountField.current?.focus?.(), 300);
 
     amountFieldSecond.current?.focus?.();
     setData((prev) => {
