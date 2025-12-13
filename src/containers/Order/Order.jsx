@@ -21,6 +21,7 @@ const Order = () => {
   const { t } = useTranslation();
   const [openAddModal, setOpenAddModal] = useState(false);
   const { createOrder, updateOrder } = useAPI();
+
   const {
     user,
     setNewOrder: setOrder,
@@ -31,6 +32,7 @@ const Order = () => {
     setOrderType,
     productsWithDeleted,
     getConvertion,
+    clients,
   } = useGlobalState();
 
   const totalPrice = useRef(null);
@@ -38,12 +40,15 @@ const Order = () => {
 
   const localProducts = order.products || [];
   const setLocalProducts = (val) => setOrder({ ...order, products: val });
+  const [disableClientInfo, setDisableClientInfo] = useState(false);
 
-  const onInputChange = (key, val) => setOrder({ ...order, [key]: val });
+  const onInputChange = (key, val) => {
+    setOrder({ ...order, [key]: val });
+  };
 
   const moveCursorToEnd = useCallback((el) => {
     const length = el.value.length;
-    el.setSelectionRange(length, length);
+    el?.setSelectionRange?.(length, length);
   }, []);
 
   const onDeleteProduct = (e, index) => {
@@ -83,10 +88,13 @@ const Order = () => {
     const newVal = formatDigits(value);
     return newVal;
   };
+
   const onClear = () => {
-    setOrder({ paymentType: PAYMENT_TYPES[0], clientName: "", clientPhone: "", isPaid: true });
+    setOrder({ paymentType: PAYMENT_TYPES[0], clientName: "", clientPhone: "", isPaid: true, ci: "" });
     setOrderType("new");
+    setDisableClientInfo(false);
   };
+
   const onSave = async () => {
     setIsloading(true);
     const total = getConvertion(totalPrice.current.id, "toDollar");
@@ -208,6 +216,26 @@ const Order = () => {
     );
   };
 
+  const onIdChange = async (e) => {
+    const newClientId = e.target.value;
+    let clientFound = null;
+    const updateObjecT = { ...order, ci: newClientId };
+
+    if (newClientId.length > 6) clientFound = clients.find((client) => client.ci === newClientId);
+
+    if (clientFound) {
+      setDisableClientInfo(true);
+      updateObjecT.clientName = clientFound.name;
+      updateObjecT.clientPhone = clientFound.phone;
+    } else {
+      updateObjecT.clientName = "";
+      updateObjecT.clientPhone = "";
+      setDisableClientInfo(false);
+    }
+
+    setOrder(updateObjecT);
+  };
+
   return (
     <div className="new-order" key={products}>
       <div className="new-order__product-add">
@@ -238,22 +266,33 @@ const Order = () => {
           </div>
         </div>
         <div className="order-payment-data">
+          <TextField
+            size="small"
+            type="number"
+            value={order.ci}
+            onChange={onIdChange}
+            label={t("clientId")}
+            className="client-name"
+          />
+
           <>
             <TextField
               size="small"
               value={order.clientName}
               onChange={(e) => onInputChange("clientName", e.target.value)}
-              label={t("clientName")}
+              label={!disableClientInfo && t("clientName")}
               className="client-name"
+              disabled={disableClientInfo}
             />
             <TextField
               size="small"
               value={order.clientPhone}
               type="number"
               onChange={(e) => onInputChange("clientPhone", e.target.value)}
-              label={t("clientPhone")}
+              label={!disableClientInfo && t("clientPhone")}
               id="clientphone"
               key={order.isPaid ? "newKEt" : "newOrkey"}
+              disabled={disableClientInfo}
             />
           </>
           {order.isPaid && (

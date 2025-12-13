@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import useReq from "../components/useReq";
-import { setDolarValue, setOrders, setProducts, setProductsWithDeleted, setUser } from "./stateSlice";
+import { setClients, setDolarValue, setOrders, setProducts, setProductsWithDeleted, setUser } from "./stateSlice";
 import axios from "axios";
 import { format } from "date-fns";
 import useDb from "../DB/useDb";
@@ -86,72 +86,6 @@ const useAPI = () => {
     }
   };
 
-  // ***********************************************************************
-
-  const getOrders = async () => {
-    try {
-      const orderMetaData = await getItem("lastUpdated", "orders");
-      const url = `orders${orderMetaData ? "?lastUpdated=" + orderMetaData.updatedAt : ""}`;
-      const resp = await getReq({ params: url });
-
-      let allOrders = [];
-
-      if (!orderMetaData) allOrders = resp;
-      else {
-        const savedOrders = await getAllItems("orders");
-        if (!savedOrders || savedOrders.length === 0) {
-          allOrders = resp || [];
-        } else {
-          allOrders = savedOrders.map((order) => {
-            const orderUpdated = resp.find((orderItem) => orderItem._id === order._id);
-            return orderUpdated ? orderUpdated : order;
-          });
-
-          const newOrders = resp.filter((orderItem) => !savedOrders.some((order) => order._id === orderItem._id));
-          allOrders = [...allOrders, ...newOrders].filter((order) => !order?.isDeleted);
-        }
-      }
-
-      dispatch(setOrders(allOrders));
-      saveCollection("orders", allOrders);
-      return true;
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const createOrder = async (data) => {
-    const body = { ...data, area: "san onofre" };
-    try {
-      await postReq({ params: "orders", body });
-      await getOrders();
-      return true;
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
-  };
-
-  const updateOrder = async (updatedInfo, id) => {
-    try {
-      const resp = await putReq({ params: `orders/id/${id}`, body: updatedInfo });
-      await getOrders();
-      return resp;
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const deleteOrder = async (id) => {
-    try {
-      const resp = await deleteReq({ params: `orders/id/${id}` });
-      await getOrders();
-      return resp;
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   // *******************************************************************************
 
   const updateUser = async (newData, id) => {
@@ -196,6 +130,106 @@ const useAPI = () => {
     }
   };
 
+  //  *******************************************************************************
+  const getClients = async () => {
+    try {
+      const clientMetaData = await getItem("lastUpdated", "clients");
+      const url = `clients${clientMetaData ? "?lastUpdated=" + clientMetaData.updatedAt : ""}`;
+      const resp = await getReq({ params: url });
+
+      let allClients = [];
+
+      if (!clientMetaData) allClients = resp;
+      else {
+        const savedClients = await getAllItems("clients");
+        if (!savedClients || savedClients.length === 0) allClients = resp || [];
+        else {
+          allClients = savedClients.map((client) => {
+            const clientUpdated = resp.find((clientItem) => clientItem._id === client._id);
+            return clientUpdated ? clientUpdated : client;
+          });
+
+          const newClients = resp.filter((clientItem) => !savedClients.some((client) => client._id === clientItem._id));
+
+          allClients = [...allClients, ...newClients].filter((client) => !client?.isDeleted);
+        }
+      }
+
+      dispatch(setClients(allClients));
+      saveCollection("clients", allClients);
+      return true;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // ***********************************************************************
+
+  const getOrders = async () => {
+    try {
+      const orderMetaData = await getItem("lastUpdated", "orders");
+      const url = `orders${orderMetaData ? "?lastUpdated=" + orderMetaData.updatedAt : ""}`;
+      const resp = await getReq({ params: url });
+
+      let allOrders = [];
+
+      if (!orderMetaData) allOrders = resp;
+      else {
+        const savedOrders = await getAllItems("orders");
+        if (!savedOrders || savedOrders.length === 0) {
+          allOrders = resp || [];
+        } else {
+          allOrders = savedOrders.map((order) => {
+            const orderUpdated = resp.find((orderItem) => orderItem._id === order._id);
+            return orderUpdated ? orderUpdated : order;
+          });
+
+          const newOrders = resp.filter((orderItem) => !savedOrders.some((order) => order._id === orderItem._id));
+          allOrders = [...allOrders, ...newOrders].filter((order) => !order?.isDeleted);
+        }
+      }
+
+      dispatch(setOrders(allOrders));
+      saveCollection("orders", allOrders);
+      return true;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const createOrder = async (data) => {
+    const body = { ...data, area: "san onofre" };
+    try {
+      await postReq({ params: "orders", body });
+      await getOrders();
+      await getClients();
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  };
+
+  const updateOrder = async (updatedInfo, id) => {
+    try {
+      const resp = await putReq({ params: `orders/id/${id}`, body: updatedInfo });
+      await getOrders();
+      await getClients();
+      return resp;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const deleteOrder = async (id) => {
+    try {
+      const resp = await deleteReq({ params: `orders/id/${id}` });
+      await getOrders();
+      return resp;
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return {
     getProducts,
     getDollar,
@@ -208,6 +242,7 @@ const useAPI = () => {
     getOrders,
     updateProduct,
     deleteProduct,
+    getClients,
   };
 };
 

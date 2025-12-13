@@ -3,27 +3,21 @@ import "./Dashboard.css";
 import { useTranslation } from "react-i18next";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { Calendar } from "primereact/calendar";
 import useDataBreakDown from "./useDataBreakDown";
 import { addDots } from "../../utils/numberFormat";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import Button from "@mui/material/Button";
-import ArrowBackIcon from "@mui/icons-material/ArrowBackIos";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForwardIos";
 import DashboardCharts from "./DashboardCharts";
 import useGlobalState from "../../actions/useGlobalState";
 import { format } from "date-fns";
-
-const initialDate = localStorage.getItem("selectedDate") ? new Date(localStorage.getItem("selectedDate")) : null;
-const initialSortBy = localStorage.getItem("sortBy") || "day";
-const initialIndexDAte = localStorage.getItem("selectedDateIndex")
-  ? new Date(localStorage.getItem("selectedDateIndex"))
-  : new Date();
+import DashboardTables from "./DashboardTables";
 
 const Dashboard = () => {
+  const initialSortBy = localStorage.getItem("sortBy") || "day";
+
+  const initialIndexDAte = localStorage.getItem("selectedDateIndex")
+    ? new Date(localStorage.getItem("selectedDateIndex"))
+    : new Date();
+
   const [sortBy, setSortBy] = useState(initialSortBy);
-  const [selectedDates, setSelectedDate] = useState({ start: initialDate, end: initialDate });
   const [indexDate, setIndexDate] = useState(initialIndexDAte);
 
   const { getConvertion } = useGlobalState();
@@ -31,7 +25,6 @@ const Dashboard = () => {
 
   const result = useDataBreakDown({
     sortBy,
-    selectedDates,
     indexDate,
   });
 
@@ -136,42 +129,9 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        {sortedBestSoldProd.length > 0 && (
-          <DataTable
-            className="best-sold-products-data-table"
-            value={sortedBestSoldProd}
-            rows={4}
-            paginator
-            paginatorTemplate={{
-              layout: "PrevPageLink CurrentPageReport NextPageLink",
-              PrevPageLink: (options) => (
-                <Button {...options}>
-                  <ArrowBackIcon />
-                </Button>
-              ),
-              NextPageLink: (options) => (
-                <Button {...options}>
-                  <ArrowForwardIcon />
-                </Button>
-              ),
-            }}
-          >
-            <Column field="product" header={t("product")} />
-            <Column
-              field="quantity"
-              body={(rowData) => {
-                return (
-                  (typeof rowData.quantity === "string" ? rowData.quantity : addDots(rowData.quantity)) +
-                  " " +
-                  rowData.unit
-                );
-              }}
-              header={t("quantity")}
-            />
-            <Column field="profit" body={(rowData) => addDots(rowData.profit)} header={t("profit")} />
-          </DataTable>
-        )}
+
         <DashboardCharts chartLabels={chartLabels} chartSells={chartSells} chartProfits={chartProfits} />
+        <DashboardTables products={sortedBestSoldProd} t={t} />
       </div>
     </div>
   );

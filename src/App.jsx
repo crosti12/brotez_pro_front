@@ -7,13 +7,13 @@ import { useTranslation } from "react-i18next";
 
 function App() {
   const { isLoggedIn, user } = useGlobalState();
-  const { getProducts, getOrders, getDollar } = useAPI();
+  const { getProducts, getOrders, getDollar, getClients } = useAPI();
   const { i18n } = useTranslation();
 
   useEffect(() => {
     if (isLoggedIn) {
       (async () => {
-        await Promise.all([getProducts(), getOrders(), getDollar()]);
+        await Promise.all([getProducts(), getOrders(), getDollar(), getClients()]);
       })();
     }
 

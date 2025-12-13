@@ -6,7 +6,7 @@ import History from "./containers/History/History";
 import Products from "./containers/Products/Products";
 import Header from "./containers/Header/Header";
 import "./layout.css";
-// import UserManagement from "./containers/UserManagement/UserManagement";
+import UserManagement from "./containers/UserManagement/UserManagement";
 
 const Routes = () => {
   const { view, dolarValue } = useGlobalState();
@@ -14,7 +14,7 @@ const Routes = () => {
     dashboard: <Dashboard />,
     addOrder: <Order />,
     history: <History />,
-    // userManagement: <UserManagement />,
+    userManagement: <UserManagement />,
     products: <Products />,
   };
 

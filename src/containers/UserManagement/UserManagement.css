@@ -1,4 +1,44 @@
 .user-management {
   background-color: white;
   height: 100%;
+  padding: 8px;
+}
+.user-table {
+  height: 100%;
+}
+.user-table .p-datatable-wrapper {
+  height: calc(100% - 120px);
+}
+.user-table tr > * {
+  padding: 8px;
+  font-size: 12px;
+}
+.user-table .product-table-header {
+  padding: 8px;
+}
+.edit-user-modal {
+  width: 100%;
+  min-width: 280px;
+  max-height: 70vh;
+  overflow: auto;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+.user-management-modal-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  color: rgb(170, 170, 170);
+}
+.user-management-modal-title {
+  width: 100%;
+  text-align: center;
+  position: relative;
+  left: 10px;
+  color: var(--accent-color);
 }

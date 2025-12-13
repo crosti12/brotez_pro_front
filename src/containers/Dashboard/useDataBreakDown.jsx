@@ -19,7 +19,7 @@ import {
 import useGlobalState from "../../actions/useGlobalState";
 import { calculate } from "../../utils/numberFormat";
 
-const useDataBreakDown = ({ sortBy = "", selectedDates = {}, indexDate }) => {
+const useDataBreakDown = ({ sortBy = "", indexDate }) => {
   const { orders, productsWithDeleted, getConvertion } = useGlobalState();
 
   const getProductInfo = useCallback(
@@ -198,7 +198,7 @@ const useDataBreakDown = ({ sortBy = "", selectedDates = {}, indexDate }) => {
         chartProfits: chart.profits,
       }
     );
-  }, [orders, sortBy, getProductInfo, selectedDates, indexDate]);
+  }, [orders, sortBy, getProductInfo, indexDate]);
 
   return result;
 };

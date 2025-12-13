@@ -26,6 +26,7 @@ const initialState = {
   showNotification: false,
   notificationMessage: "",
   isLoggedIn: isTokenValid(),
+  clients: [],
   dolarValue: Number(localStorage.getItem("dolarValue") || 0),
 };
 
@@ -71,6 +72,9 @@ const globalSlice = createSlice({
       localStorage.setItem("dolarValue", action.payload);
       state.dolarValue = action.payload;
     },
+    setClients: (state, action) => {
+      state.clients = action.payload;
+    },
   },
 });
 
@@ -86,6 +90,7 @@ export const {
   setShowNotification,
   setNotificationMessage,
   setOrderType,
+  setClients,
 } = globalSlice.actions;
 
 export default globalSlice.reducer;

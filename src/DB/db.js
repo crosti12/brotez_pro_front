@@ -9,6 +9,9 @@ export const initDB = async () => {
       if (!db.objectStoreNames.contains("products")) {
         db.createObjectStore("products", { keyPath: "_id" });
       }
+      if (!db.objectStoreNames.contains("clients")) {
+        db.createObjectStore("clients", { keyPath: "_id" });
+      }
       if (!db.objectStoreNames.contains("lastUpdated")) {
         db.createObjectStore("lastUpdated", { keyPath: "collection" });
       }

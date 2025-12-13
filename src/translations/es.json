@@ -65,6 +65,10 @@
   "range": "Rango",
   "day": "Día",
   "avgBuy": "Compra promedio",
+  "clientId": "Cedula",
+  "ci": "Cedula",
+  "phone": "Teléfono",
+  "editUserModal": "Editar usuario",
   "errorMsgs": {
     "productsMissing": "Por favor agregue al menos un producto",
     "referenceFieldMissing": "Falta el campo de referencia",
