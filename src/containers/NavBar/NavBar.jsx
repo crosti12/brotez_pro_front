@@ -11,7 +11,7 @@ const ADD_SIZE = "50px";
 const BUTTON_SIZE = "30px";
 
 const NavBar = () => {
-  const { getProducts, getOrders } = useAPI();
+  const { getProducts, getOrders, getClients } = useAPI();
   const navButtons = [
     {
       id: "products",
@@ -38,6 +38,7 @@ const NavBar = () => {
       icon: <AssignmentIndIcon sx={{ width: BUTTON_SIZE, height: BUTTON_SIZE }} />,
       className: "nav-btn",
       styles: { width: BUTTON_SIZE, height: BUTTON_SIZE },
+      extraFnc: () => getClients(),
     },
     {
       id: "history",
