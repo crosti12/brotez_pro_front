@@ -41,7 +41,6 @@ const Order = () => {
   const localProducts = order.products || [];
   const setLocalProducts = (val) => setOrder({ ...order, products: val });
   const [disableClientInfo, setDisableClientInfo] = useState(false);
-
   const onInputChange = (key, val) => {
     setOrder({ ...order, [key]: val });
   };
@@ -228,8 +227,6 @@ const Order = () => {
       updateObjecT.clientName = clientFound.name;
       updateObjecT.clientPhone = clientFound.phone;
     } else {
-      updateObjecT.clientName = "";
-      updateObjecT.clientPhone = "";
       setDisableClientInfo(false);
     }
 

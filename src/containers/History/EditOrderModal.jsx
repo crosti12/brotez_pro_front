@@ -24,7 +24,7 @@ const EditOrderModal = ({
   paymentInf = {},
   setPaymentInf = () => {},
 }) => {
-  const { user, productsWithDeleted, setOrderType, setNewOrder, setView, showMessage, getConvertion } =
+  const { user, productsWithDeleted, setOrderType, setNewOrder, setView, showMessage, getConvertion, clients } =
     useGlobalState();
   const [loading, setIsloading] = useState(false);
   const onClose = () => {
@@ -60,6 +60,7 @@ const EditOrderModal = ({
   };
 
   const onEditOrder = () => {
+    const orderClient = clients.find((client) => client._id === data.clientId);
     const orderFormat = {
       paymentType: data.paymentType,
       clientName: data.clientName,
@@ -78,6 +79,7 @@ const EditOrderModal = ({
         return test;
       }),
     };
+    orderClient && (orderFormat.ci = orderClient.ci);
     setNewOrder(orderFormat);
     setView("addOrder");
     setOrderType("edit");
