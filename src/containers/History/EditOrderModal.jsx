@@ -228,7 +228,9 @@ const EditOrderModal = ({
             {data?.clientPhone && (
               <span>
                 <h1>{t("clientPhone")}:</h1>
-                <p>{data?.clientPhone}</p>
+                <a target="_blank" href={"https://wa.me/" + data?.clientPhone}>
+                  {data?.clientPhone}
+                </a>
               </span>
             )}
             {data.isPaid && (
