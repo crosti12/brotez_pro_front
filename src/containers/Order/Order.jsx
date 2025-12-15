@@ -219,7 +219,7 @@ const Order = () => {
     let clientFound = null;
     const updateObjecT = { ...order, ci: newClientId };
 
-    if (newClientId.length > 6) clientFound = clients.find((client) => client.ci === newClientId);
+    if (newClientId?.length > 6) clientFound = clients.find((client) => client.ci === newClientId);
 
     if (clientFound) {
       setDisableClientInfo(true);
