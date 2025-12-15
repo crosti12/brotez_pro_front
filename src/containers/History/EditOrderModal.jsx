@@ -228,7 +228,7 @@ const EditOrderModal = ({
             {data?.clientPhone && (
               <span>
                 <h1>{t("clientPhone")}:</h1>
-                <a target="_blank" href={"https://wa.me/" + data?.clientPhone}>
+                <a target="_blank" href={"https://wa.me/+58" + (data?.clientPhone || "").substring(1)}>
                   {data?.clientPhone}
                 </a>
               </span>
