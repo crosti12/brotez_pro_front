@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import { useTranslation } from "react-i18next";
@@ -214,9 +214,8 @@ const Order = () => {
       </>
     );
   };
-
-  const onIdChange = async (e) => {
-    const newClientId = e.target.value;
+  const setClientInfo = (value) => {
+    const newClientId = value;
     let clientFound = null;
     const updateObjecT = { ...order, ci: newClientId };
 
@@ -232,6 +231,12 @@ const Order = () => {
 
     setOrder(updateObjecT);
   };
+
+  const onIdChange = async (e) => setClientInfo(e.target.value);
+
+  useEffect(() => {
+    setClientInfo(order.ci);
+  }, []);
 
   return (
     <div className="new-order" key={products}>

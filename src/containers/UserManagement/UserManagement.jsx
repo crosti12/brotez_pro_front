@@ -39,7 +39,7 @@ const UserManagement = ({ mode = "new" }) => {
       <DataTable
         className="user-table"
         paginator
-        rows={11}
+        rows={14}
         paginatorTemplate={{
           layout: "PrevPageLink CurrentPageReport NextPageLink",
           PrevPageLink: (options) => (
