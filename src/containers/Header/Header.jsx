@@ -21,7 +21,7 @@ const Header = () => {
         <p className="header-font">{user.username}</p>
         <p className="body-font">{user.role}</p>
       </div>
-      <span className="dollar-info">{dolarValue.toFixed(2)} $</span>
+      <span className="dollar-info">{dolarValue?.toFixed(2)} $</span>
       <Button onClick={onOpenSettings} className="open-settings-btn">
         <SettingsIcon className="setting-icon" />
       </Button>

@@ -107,7 +107,7 @@ const useAPI = () => {
       const today = format(new Date(), "yyyy-MM-dd");
       const data = resp?.data;
       if (data.current?.date !== today) {
-        dispatch(setDolarValue(data.previous.usd));
+        dispatch(setDolarValue(data.previous.usd || data.current.usd));
       } else {
         dispatch(setDolarValue(data.current.usd));
       }
