@@ -24,11 +24,9 @@ if ("serviceWorker" in navigator) {
 }
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <ToastProvider>
-      <Provider store={store}>
-        <App />
-      </Provider>
-    </ToastProvider>
-  </StrictMode>
+  <ToastProvider>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </ToastProvider>,
 );

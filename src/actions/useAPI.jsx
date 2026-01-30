@@ -101,15 +101,21 @@ const useAPI = () => {
   const getDollar = async () => {
     try {
       const resp = await axios({
-        url: "https://api.dolarvzla.com/public/exchange-rate",
+        url: "https://ve.dolarapi.com/v1/dolares/oficial",
         method: "GET",
       });
       const today = format(new Date(), "yyyy-MM-dd");
+
       const data = resp?.data;
-      if (data.current?.date !== today) {
-        dispatch(setDolarValue(data.previous.usd || data.current.usd));
+      const newdollarValue = data?.promedio;
+      const dollarLastUpdated = format(data?.fechaActualizacion, "yyyy-MM-dd");
+      const oldDollarValue = localStorage.getItem("dolarValue");
+
+      if (dollarLastUpdated === today || !oldDollarValue) {
+        dispatch(setDolarValue(newdollarValue));
+        localStorage.setItem("dolarValue", newdollarValue);
       } else {
-        dispatch(setDolarValue(data.current.usd));
+        dispatch(setDolarValue(oldDollarValue || newdollarValue));
       }
     } catch (error) {
       console.error(error);
