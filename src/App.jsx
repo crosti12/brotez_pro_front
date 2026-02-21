@@ -17,7 +17,7 @@ function App() {
       })();
     }
 
-    const intervalID = setInterval(() => getDollar(), 12 * 60 * 60 * 1000);
+    const intervalID = setInterval(() => getDollar(), 3 * 60 * 60 * 1000);
 
     i18n.changeLanguage(user?.language || "es");
 
