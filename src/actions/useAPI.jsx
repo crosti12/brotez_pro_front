@@ -121,6 +121,26 @@ const useAPI = () => {
       console.error(error);
     }
   };
+
+  const updateDollar = async () => {
+    try {
+      const resp = await axios({
+        url: "https://ve.dolarapi.com/v1/dolares/oficial",
+        method: "GET",
+      });
+
+      const promedio =  resp?.data?.promedio;
+    
+      if (promedio) {
+        localStorage.setItem("dolarValue", promedio);
+        dispatch(setDolarValue(promedio));
+      }
+      
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const onLogin = async ({ password = "", username = "" }) => {
     if (!password || !username) return;
     try {
@@ -249,6 +269,7 @@ const useAPI = () => {
     updateProduct,
     deleteProduct,
     getClients,
+    updateDollar
   };
 };
 

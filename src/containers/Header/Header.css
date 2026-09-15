@@ -12,12 +12,17 @@
   position: sticky;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-.setting-icon {
-  margin-left: auto;
-}
+
 .setting-icon path {
   fill: var(--accent-color);
 }
+.reload-dolar-icon {
+  margin-left: auto;
+}
+.reload-dolar-icon path {
+  fill: var(--accent-color);
+}
+
 .open-settings-btn {
   margin-left: auto;
   margin-right: 4px;
@@ -71,10 +76,12 @@
   width: 100%;
 }
 .dollar-info {
-  font-size: 10px;
-  height: 100%;
   display: flex;
   align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 10px;
+  height: 100%;
   width: 100%;
   justify-content: end;
   /* border: 1px solid red; */
